@@ -27,7 +27,51 @@ class V0Controller extends Controller
         }
         echo json_encode($msg);
     }
+    public function test($arr)
+    {
+        $msg = $this->msgcode();
+        $x = $arr['user'];
+        $y = $arr['id'];
 
+        $this->msgsucc($msg);
+        $msg['data'] = array("user"=>$x,"id"=>$y);
+        echo json_encode($msg);
+    }
+
+    public function getzone($arr)
+    {
+        $msg = $this->msgcode();
+        $x = $arr['y'];
+        $y = $arr['x'];
+        $api = sprintf("http://api.map.baidu.com/geocoder/v2/?ak=0QDaLukGIKr22SwQKTWNxGSz&location=%s,%s&output=json&pois=0",$x,$y);
+        $data = json_decode(RemoteCurl::getInstance()->get($api),true);
+
+        if($data['status']==0)
+        {
+            $zone = $data['result']['addressComponent']['district'];
+            $city = $data['result']['addressComponent']['city'];
+            if($city!="甘孜藏族自治州")
+            {
+                $msg['code'] = 3;
+                $msg['msg'] = "您当前不在甘孜";
+            }
+            $arr  = array_keys(TmpList::$zone_list,$zone);
+            if(!empty($arr[0]))
+            {
+                $this->msgsucc($msg);
+                $msg['data'] = $arr[0];
+            }else
+            {
+                $msg['code'] = 3;
+                $msg['msg'] = "您当前不在甘孜";
+            }
+        }else{
+            $msg['code'] = 2;
+            $msg['msg'] = "无法定位，请开启GPS";
+        }
+        echo json_encode($msg);
+
+    }
 
     /**
      * 首页新闻接口
@@ -1081,9 +1125,9 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'newsdesc',
-            'id' => 956,
-            'type'=>1
+            'action' => 'getzone',
+            'y' => 30.88,
+            'x'=>101.88
         );
 
 //        $params = array(
@@ -1098,11 +1142,10 @@ class V0Controller extends Controller
         $data = json_encode($params);
         $sign = md5($data.$salt);
         $rtnList = array(
-            "file"=>'@'."d:/bg_rain.png",
             "data"=>$data,
             "sign"=>$sign
         );
-        print_r(RemoteCurl::getInstance()->post('http://120.24.234.19/api/jixiang/server/project/index.php',$rtnList));
+        print_r(json_decode(RemoteCurl::getInstance()->post('http://127.0.0.1/xzgz/project/index.php',$rtnList)));
     }
 
 }
