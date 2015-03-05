@@ -142,11 +142,12 @@ class V0Controller extends Controller
     {
         $msg = $this->msgcode();
         $type = $arr['news_type'];
+        $zone = $arr['zonecode'];
         $page = empty($arr['page'])?1:$arr['page'];
         if($page<1)$page=1;
 
         $criteria = new CDbCriteria;
-        $criteria->addCondition("type={$type}");
+        $criteria->addCondition("type={$type} and FIND_IN_SET('{$zone}',zone_list)");
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $criteria->order = 'stime DESC';
@@ -155,6 +156,38 @@ class V0Controller extends Controller
         foreach ($allList as $value) {
             array_push($data,array(
                 "news_id"=>$value['id'], //新闻编号
+                "time"=>date("Y-m-d",$value['stime']),
+                "title"=>$value['title'],
+                "tag"=>$value['tag']
+            ));
+        }
+        $this->msgsucc($msg);
+        $msg['data'] = $data;
+        echo json_encode($msg);
+    }
+
+    /**
+     * 获取新闻列表和分页接口
+     * @param $arr
+     *
+     */
+    public function getsceniclist($arr)
+    {
+        $msg = $this->msgcode();
+        $zone = $arr['zonecode'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("zone='{$zone}'");
+        $criteria->limit = 20;
+        $criteria->offset = 20 * ($page - 1);
+        $criteria->order = 'id DESC';
+        $allList = AppXzScenic::model()->findAll($criteria);
+        $data = array();
+        foreach ($allList as $value) {
+            array_push($data,array(
+                "scenic_id"=>$value['id'], //新闻编号
                 "time"=>date("Y-m-d",$value['stime']),
                 "title"=>$value['title'],
                 "tag"=>$value['tag']
@@ -1175,7 +1208,8 @@ class V0Controller extends Controller
         $params = array(
             'action' => 'getnewslist',
             'news_type' => "3",
-            'page'=>1
+            'page'=>1,
+            'zonecode'=>"xy1"
         );
 
 //        $params = array(
