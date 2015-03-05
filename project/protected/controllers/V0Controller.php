@@ -2,7 +2,7 @@
 
 class V0Controller extends Controller
 {
-    public $utrl = "http://120.24.234.19";
+    public $utrl = "http://120.24.234.19/api";
     /**
      * 生成首页
      *
@@ -79,42 +79,57 @@ class V0Controller extends Controller
      */
     public function homenews($arr)
     {
-        $ayy = array();
-        $slide = array();
-        foreach(TmpList::$news_list as $k=>$val)
-        {
-            if($k==2)
-                $type = 1;
-            elseif($k==5)
-                $type = 2;
-            else
-                $type = 0;
-            $ayy[$k] = array('id'=>$k,"title"=>"","img_url"=>"","type"=>$type,"news_id"=>NULL);
-        }
         $msg = $this->msgcode();
-        $connection = Yii::app()->db;
-        $sql = 'select * from(select * from jixiang.jx_news where status=0 order by id desc )a group by type';
+        $zone = $arr['zonecode'];
+        $slideArr = array();
+        $tipArr = array();
+        $helpArr = array();
 
-        $sql1 = 'select * from(select * from jixiang.jx_news where img_url is not null and type in(0,2,3) and status=1 order by id desc )a group by type';
-        $row1 =  $connection->createCommand($sql1)->query();
-        foreach($row1 as $v)
-        {
-            if($v['type']==2)
-                $typ = 1;
-            else
-                $typ = 0;
-            array_push($slide,array('id'=>$v['type'],"title"=>$v['title'],"img_url"=>$this->utrl.Yii::app()->request->baseUrl.$v['img_url'],"type"=>$typ,"news_id"=>$v['id']));
+        $slide = AppXzTips::model()->findAll("type=:tp and img!='' and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,4",array(":tp"=>3,
+            ":tm"=>time()
+        ));
+        foreach ($slide as $v ){
+            $pass = empty($v['img'])?"":$this->utrl.Yii::app()->request->baseUrl.$v['img'];
+            array_push($slideArr,array("news_id"=>$v['id'],"img"=>$pass,"title"=>$v['title']));
         }
 
-        $rows = $connection->createCommand($sql)->query();
-        foreach ($rows as $v ){
-            $pass = empty($v['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$v['img_url'];
-            $ayy[$v['type']]["title"] = $v['title'];
-            $ayy[$v['type']]["news_id"] = $v['id'];
-            $ayy[$v['type']]["img_url"] = $this->getSlt($pass,0);
+        $more = 0;
+        $tip = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,3",array(":tp"=>1,
+            ":tm"=>time()
+        ));
+        foreach ($tip as $k=>$v ){
+            if($k>1){
+                $more = 1;
+                break;
+            }
+            array_push($tipArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
+        }
+        $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) order by stime desc limit 0,6",array(":tp"=>2));
+        foreach ($help as $v ){
+            array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title']));
+        }
+
+        $zname = TmpList::$zone_list[$zone];
+        $url = "http://api.map.baidu.com/telematics/v3/weather?location={$zname}&output=json&ak=0QDaLukGIKr22SwQKTWNxGSz";
+
+        $data = json_decode(RemoteCurl::getInstance()->get($url),true);
+        $allList = array();
+        if($data['status']=="success")
+        {
+            if(!empty($data['results'][0]['weather_data'])&&is_array($data['results'][0]['weather_data']))
+            {
+                $this->msgsucc($msg);
+                $model = $data['results'][0]['weather_data'];
+                $start = strpos($model[0]['date'],"：");
+                $crent = mb_substr($model[0]['date'],$start+3,-1);
+                $day = "星期".mb_substr($model[0]['date'],3,3);
+                $allList = array("temperature"=>$crent,"date"=>date("Y.m.d",time()),
+                    "imgcode"=>$this->getW($model[0]['weather']),"weather"=>$model[0]['weather'],"day"=>$day
+                );
+            }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slide,"list"=>$ayy);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
         echo json_encode($msg);
     }
 
@@ -1125,8 +1140,8 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'getzone',
-            'y' => 30.88,
+            'action' => 'homenews',
+            'zonecode' => "xy3",
             'x'=>101.88
         );
 
