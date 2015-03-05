@@ -133,6 +133,39 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     * 获取新闻列表和分页接口
+     * @param $arr
+     *
+     */
+    public function getnewslist($arr)
+    {
+        $msg = $this->msgcode();
+        $type = $arr['news_type'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("type={$type}");
+        $criteria->limit = 20;
+        $criteria->offset = 20 * ($page - 1);
+        $criteria->order = 'stime DESC';
+        $allList = AppXzTips::model()->findAll($criteria);
+        $data = array();
+        foreach ($allList as $value) {
+            array_push($data,array(
+                "news_id"=>$value['id'], //新闻编号
+                "time"=>date("Y-m-d",$value['stime']),
+                "title"=>$value['title'],
+                "tag"=>$value['tag']
+            ));
+        }
+        $this->msgsucc($msg);
+        $msg['data'] = $data;
+        echo json_encode($msg);
+    }
+
+
     protected function getSlt($url,$sta=1)
     {
         $utl = $url;
@@ -1140,9 +1173,9 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'homenews',
-            'zonecode' => "xy3",
-            'x'=>101.88
+            'action' => 'getnewslist',
+            'news_type' => "3",
+            'page'=>1
         );
 
 //        $params = array(
