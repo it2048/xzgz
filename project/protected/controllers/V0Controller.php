@@ -2,7 +2,7 @@
 
 class V0Controller extends Controller
 {
-    public $utrl = "http://120.24.234.19/api";
+    public $utrl = "http://120.24.234.19";
     /**
      * 生成首页
      *
@@ -1288,7 +1288,7 @@ class V0Controller extends Controller
 
         $params = array(
             'action' => 'scenicdetails',
-            'scenic_id' => "7",
+            'scenic_id' => "1",
             'page'=>1,
             'zonecode'=>"xy3"
         );
@@ -1308,7 +1308,7 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
