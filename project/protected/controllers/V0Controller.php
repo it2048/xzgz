@@ -148,6 +148,9 @@ class V0Controller extends Controller
 
         $criteria = new CDbCriteria;
         $criteria->addCondition("type={$type} and FIND_IN_SET('{$zone}',zone_list)");
+        $tm = time();
+        if($type==1||$type==3)
+             $criteria->addCondition("stime<{$tm} and endtime>{$tm}");
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $criteria->order = 'stime DESC';
@@ -1209,7 +1212,7 @@ class V0Controller extends Controller
             'action' => 'getnewslist',
             'news_type' => "3",
             'page'=>1,
-            'zonecode'=>"xy1"
+            'zonecode'=>"xy3"
         );
 
 //        $params = array(

@@ -53,7 +53,7 @@ class HomenewsController extends AdminSet
         $etime = Yii::app()->getRequest()->getParam("etime", ""); //结束时间
         $title = Yii::app()->getRequest()->getParam("news_title", ""); //标题
         $content = Yii::app()->getRequest()->getParam("news_content", ""); //内容
-
+$source = Yii::app()->getRequest()->getParam("news_source", ""); //内容
         $tag = Yii::app()->getRequest()->getParam("news_tag", ""); //内容
         $zone = Yii::app()->getRequest()->getParam("zone", ""); //关联
         $username = $this->getUserName(); //用户名
@@ -90,7 +90,7 @@ class HomenewsController extends AdminSet
             $model->type = $type;
             
             $model->tag = $tag;
-
+            $model->source = $source;
             $model->stime = strtotime($stime);
             $model->endtime = strtotime($etime);
             $model->user = $username;
@@ -234,7 +234,7 @@ class HomenewsController extends AdminSet
         $etime = Yii::app()->getRequest()->getParam("etime", ""); //结束时间
         $title = Yii::app()->getRequest()->getParam("news_title", ""); //标题
         $content = Yii::app()->getRequest()->getParam("news_content", ""); //内容
-
+$source = Yii::app()->getRequest()->getParam("news_source", ""); //内容
         $tag = Yii::app()->getRequest()->getParam("news_tag", ""); //内容
         $zone = Yii::app()->getRequest()->getParam("zone", ""); //关联
         $username = $this->getUserName(); //用户名
@@ -278,7 +278,7 @@ class HomenewsController extends AdminSet
             $model->img = $img_url;
             $model->content = $content;
             $model->zone_list = implode(",", $zone);
-            
+            $model->source = $source;
             
             if($model->save())
             {

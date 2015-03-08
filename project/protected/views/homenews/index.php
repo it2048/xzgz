@@ -17,6 +17,7 @@
             <th width="60">发布时间</th>
             <th width="60">结束时间</th>
             <th width="60">添加人</th>
+            <th width="60">作者</th>
             <th width="40">封面查看</th>
             <th width="40">新闻类型</th>
             <th width="80">操作</th>
@@ -31,6 +32,7 @@
                 <td><?php echo date("Y-m-d H:i:s", $value['stime']); ?></td>
                 <td><?php echo date("Y-m-d H:i:s", $value['endtime']); ?></td>
                 <td><?php echo $value['user']; ?></td>
+                <td><?php echo $value['source']; ?></td>
                 <td><?php if(trim($value['img'])!=""){ ?><a href="<?php echo Yii::app()->request->baseUrl.$value['img']; ?>" class="btnView" target="_blank">图片查看</a><?php }?></td>
                 <td><?php echo TmpList::$news_list[$value['type']]; ?></td>
                 <td>

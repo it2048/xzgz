@@ -24,6 +24,10 @@
                 <label>标签：</label>
                 <input  name="news_tag" type="text" class="textInput" size="50" value="<?php echo $models->tag;?>">
             </p>
+            <p class="nowrap">
+                <label>作者：</label>
+                <input  name="news_source" type="text" class="textInput" size="50" value="<?php echo $models->source;?>">
+            </p>
             <p>
                     <label>发布时间：</label>
                     <input type="text" name="stime" class="date" dateFmt="yyyy-MM-dd HH:mm:ss" readonly="true" value="<?php echo date("Y-m-d H:i:s",$models->stime); ?>"/>
