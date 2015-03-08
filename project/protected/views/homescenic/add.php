@@ -20,6 +20,10 @@
                 <label>简要描述：</label>
                 <input  name="scien_desc" id="scien_desc" type="text" class="textInput" size="50" value="">
             </p>
+            <p class="nowrap">
+                <label>小图标上传：</label>
+                <input name="scien_icon" type="file">
+            </p>
              <p class="nowrap">
                 <label>地址描述：</label>
                 <input  name="scien_add" id="scien_add" type="text" class="textInput" size="50" value="">

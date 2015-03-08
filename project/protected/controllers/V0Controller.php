@@ -157,18 +157,47 @@ class V0Controller extends Controller
         $allList = AppXzTips::model()->findAll($criteria);
         $data = array();
         foreach ($allList as $value) {
+            $img = empty($value['img'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['img'];
             array_push($data,array(
                 "news_id"=>$value['id'], //新闻编号
                 "time"=>date("Y-m-d",$value['stime']),
                 "title"=>$value['title'],
-                "tag"=>$value['tag']
+                "tag"=>$value['tag'],
+                "img"=>$img
             ));
         }
         $this->msgsucc($msg);
         $msg['data'] = $data;
         echo json_encode($msg);
     }
-
+    
+    /**
+     * 获取新闻详情
+     * @param type $arr
+     */
+    public function newsdetails($arr)
+    {
+        $msg = $this->msgcode();
+        if(empty($arr['news_id']))
+        {
+            $msg['msg'] = "新闻编号参数未传入";
+        }else
+        {
+             $id = $arr['news_id'];
+             $allList = AppXzTips::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $this->msgsucc($msg);
+                $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
+                $msg['data'] = array("title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,"content"=>$allList->content);
+            }else
+            {
+                $msg['msg'] = "新闻不存在";
+            }
+        }
+        echo json_encode($msg);
+    }
+    
     /**
      * 获取新闻列表和分页接口
      * @param $arr
@@ -178,22 +207,31 @@ class V0Controller extends Controller
     {
         $msg = $this->msgcode();
         $zone = $arr['zonecode'];
-        $page = empty($arr['page'])?1:$arr['page'];
-        if($page<1)$page=1;
-
+        
         $criteria = new CDbCriteria;
         $criteria->addCondition("zone='{$zone}'");
-        $criteria->limit = 20;
-        $criteria->offset = 20 * ($page - 1);
-        $criteria->order = 'id DESC';
         $allList = AppXzScenic::model()->findAll($criteria);
         $data = array();
         foreach ($allList as $value) {
+            $img = "";
+            if(!empty($value['img']))
+            {
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+            }
+            $icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+            $mp3 = empty($value['mp3'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['mp3'];
             array_push($data,array(
                 "scenic_id"=>$value['id'], //新闻编号
-                "time"=>date("Y-m-d",$value['stime']),
-                "title"=>$value['title'],
-                "tag"=>$value['tag']
+                "ptime"=>$value['ptime'],
+                "name"=>$value['title'],
+                "desc"=>$value['desc'],
+                "img"=>$img,
+                "icon"=>$icon,
+                "top"=>$value['top'],
+                "mp3"=>$mp3,
+                "x"=>$value['x'],
+                "y"=>$value['y']
             ));
         }
         $this->msgsucc($msg);
@@ -201,13 +239,53 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
-
-    protected function getSlt($url,$sta=1)
+    public function scenicdetails($arr)
     {
-        $utl = $url;
-        if($sta!==1&&strpos($url,"/slt")!==false)
+        $msg = $this->msgcode();
+        if(empty($arr['scenic_id']))
         {
-            $utl = str_replace("/slt","/slt/slt",$url);
+            $msg['msg'] = "景点编号参数未传入";
+        }else
+        {
+             $id = $arr['scenic_id'];
+             $allList = AppXzScenic::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $this->msgsucc($msg);
+                $mgArr = array();
+                if(!empty($allList->img))
+                {
+                    $imgArr = json_decode($allList->img,true);
+                    if(is_array($imgArr))
+                    {
+                        foreach ($imgArr as $val) {
+                            array_push($mgArr,array("url"=>$this->getUrl($val['url']),"desc"=>$val['desc']));
+                        }
+                    }
+                }
+                $msg['data'] = array(
+                    "scenic_id"=>$allList->id,
+                    "name"=>$allList->title,
+                    "imgList"=>$mgArr,
+                    "icon"=>$this->getUrl($allList->icon),
+                    "address"=>$allList->add,
+                    "content"=>$allList->content,
+                    "mp3"=>$this->getUrl($allList->mp3)
+                );
+            }else
+            {
+                $msg['msg'] = "景点不存在";
+            }
+        }
+        echo json_encode($msg);
+    }
+
+    protected function getUrl($url)
+    {
+        $utl = "";
+        if(!empty($url))
+        {
+            $utl = $this->utrl.Yii::app()->request->baseUrl.$url;
         }
         return $utl;
     }
@@ -1209,8 +1287,8 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'getnewslist',
-            'news_type' => "3",
+            'action' => 'scenicdetails',
+            'scenic_id' => "7",
             'page'=>1,
             'zonecode'=>"xy3"
         );
@@ -1230,7 +1308,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        print_r(json_decode(RemoteCurl::getInstance()->post('http://127.0.0.1/xzgz/project/index.php',$rtnList)));
+        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
 }

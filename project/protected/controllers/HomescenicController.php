@@ -73,6 +73,33 @@ class HomescenicController extends AdminSet
                 $msg["code"] = 3;
             }
         }
+        
+        $icon_url = "";
+        if(!empty($_FILES['scien_icon']['name']))
+        {
+            $img = array("png","jpg","gif");
+            $_tmp_pathinfo = pathinfo($_FILES['scien_icon']['name']);
+            if (in_array(strtolower($_tmp_pathinfo['extension']),$img)) {
+                //设置图片路径
+                $flname = '/'.time().".".$_tmp_pathinfo['extension'];
+                $dest_file_path = Yii::app()->basePath . '/../public/upload'.$flname;
+                $filepathh = dirname($dest_file_path);
+                if (!file_exists($filepathh))
+                    $b_mkdir = mkdir($filepathh, 0777, true);
+                else
+                    $b_mkdir = true;
+                if ($b_mkdir && is_dir($filepathh)) {
+                    //转存文件到 $dest_file_path路径
+                    if (move_uploaded_file($_FILES['scien_icon']['tmp_name'], $dest_file_path)) {
+                        $icon_url ='/public/upload'.$flname;
+                    }
+                }
+            } else {
+                $msg["msg"] = '上传的文件格式只能为jpg,png';
+                $msg["code"] = 3;
+            }
+        }
+        
         $idArr = array();
         if($msg["code"] == 3)
         {
@@ -94,6 +121,7 @@ class HomescenicController extends AdminSet
             $model->content = $content;
             $model->top = $top;
             $model->mp3 = $img_url;
+            $model->icon = $icon_url;
             $model->atime = time();
             $model->ptime = $ptime;
             $model->img = json_encode($idArr);
@@ -269,6 +297,33 @@ class HomescenicController extends AdminSet
                 $msg["code"] = 3;
             }
         }
+        $icon_url = $model->icon;
+        if(!empty($_FILES['scien_icon']['name']))
+        {
+            $img = array("png","jpg","gif");
+            $_tmp_pathinfo = pathinfo($_FILES['scien_icon']['name']);
+            if (in_array(strtolower($_tmp_pathinfo['extension']),$img)) {
+                //设置图片路径
+                $flname = '/'.time().".".$_tmp_pathinfo['extension'];
+                $dest_file_path = Yii::app()->basePath . '/../public/upload'.$flname;
+                $filepathh = dirname($dest_file_path);
+                if (!file_exists($filepathh))
+                    $b_mkdir = mkdir($filepathh, 0777, true);
+                else
+                    $b_mkdir = true;
+                if ($b_mkdir && is_dir($filepathh)) {
+                    //转存文件到 $dest_file_path路径
+                    if (move_uploaded_file($_FILES['scien_icon']['tmp_name'], $dest_file_path)) {
+                        $icon_url ='/public/upload'.$flname;
+                        @unlink(Yii::app()->basePath . '/..'.$model->icon);
+                    }
+                }
+            } else {
+                $msg["msg"] = '上传的文件格式只能为jpg,png';
+                $msg["code"] = 3;
+            }
+        }
+        
         $idArr = array();
         if($title!="")
         {
@@ -285,6 +340,7 @@ class HomescenicController extends AdminSet
             $model->top = $top;
             $model->mp3 = $img_url;
             $model->atime = time();
+            $model->icon = $icon_url;
             $model->ptime = $ptime;
             $model->img = json_encode($idArr);
             $model->add = $add;
