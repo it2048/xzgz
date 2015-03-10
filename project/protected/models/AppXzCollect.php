@@ -2,11 +2,11 @@
 /**
  * Created by PhpStorm.
  * User: xiongfanglei
- * Date: 14-11-27
- * Time: 下午6:26
+ * Date: 15-3-10
+ * Time: 下午5:27
  */
 
-class AppJxCollect extends JxCollect {
+class AppXzCollect extends XzCollect {
 
     /**
      * 实例化模型

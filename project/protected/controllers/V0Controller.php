@@ -280,6 +280,11 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     * 获取资源完整地址
+     * @param $url
+     * @return string
+     */
     protected function getUrl($url)
     {
         $utl = "";
@@ -290,271 +295,6 @@ class V0Controller extends Controller
         return $utl;
     }
 
-    /**
-     * 新闻分类接口
-     * @param $type
-     * @param $msg
-     *
-     */
-    private function cateNews($type,&$msg)
-    {
-        $slideArr = array();
-        $listArr = array();
-        $slide = AppJxNews::model()->findAll("type=:tp and img_url is not null and status=1 order by id desc limit 0,6",array(":tp"=>$type));
-        $list = AppJxNews::model()->findAll("type=:tp and status=0 order by id desc limit 0,20",array(":tp"=>$type));
-        $sta = $type==2?1:0;
-        if(empty($slide))
-        {
-            $i = 0;
-            foreach($list as $val)
-            {
-                $ct = substr_count($val['child_list'],',')+2;
-                if($ct==2) $ct=1;
-                $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-                $pass = empty($val['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$val['img_url'];
-                $listArr[$i] = array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$this->getSlt($pass,
-                        $sta),"type"=>$sta,
-                    "time"=>$val['addtime'],"summary"=>$summary,"imgcount"=>$ct);
-                $i++;
-            }
-        }else{
-            foreach($slide as $val)
-            {
-                $pass = empty($val['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$val['img_url'];
-                $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-                array_push($slideArr,array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$pass,"type"=>$sta,"time"=>$val['addtime'],"summary"=>$summary));
-            }
-            $i = 0;
-            foreach($list as $val)
-            {
-                $ct = substr_count($val['child_list'],',')+2;
-                if($ct==2) $ct=1;
-                $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-                $pass = empty($val['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$val['img_url'];
-                $listArr[$i] = array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$this->getSlt($pass,$sta),
-                    "type"=>$sta,"time"=>$val['addtime'],"summary"=>$summary,"imgcount"=>$ct);
-                $i++;
-            }
-        }
-        $msg['code'] = 0;
-        $msg['msg'] = "成功";
-        $msg['data'] = array("slide"=>$slideArr,"list"=>$listArr);
-    }
-
-
-    /**
-     * 新闻分类接口
-     * @param $type
-     * @param $msg
-     *
-     */
-    private function cateImg($type,&$msg,$page=1)
-    {
-        if($page<1)$page=1;
-        $listArr = array();
-        $lmt = ($page-1)*20;
-        $list = AppJxNews::model()->findAll("type=:tp and child_list!='' order by id desc limit {$lmt},20",array(":tp"=>$type));
-        $sta = 1;
-        $i = 0;
-        foreach($list as $val)
-        {
-            $ct = substr_count($val['child_list'],',');
-            if($ct==0) $ct = 2;
-            else $ct += 2;
-            $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-            $listArr[$i] = array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$this->getSlt($this->utrl.Yii::app()->request->baseUrl.$val['img_url'],1),
-                "type"=>$sta,"time"=>$val['addtime'],"summary"=>$summary,"imgcount"=>$ct);
-            $i++;
-        }
-        $msg['code'] = 0;
-        $msg['msg'] = "成功";
-        $msg['data'] = array("slide"=>array(),"list"=>$listArr);
-    }
-    private function pageImg($type,&$msg,$page=1)
-    {
-        if($page<1)$page=1;
-        $listArr = array();
-        $lmt = ($page-1)*20;
-        $list = AppJxNews::model()->findAll("type=:tp and child_list!='' order by id desc limit {$lmt},20",array(":tp"=>$type));
-        $sta = 1;
-        $i = 0;
-        foreach($list as $val)
-        {
-            $ct = substr_count($val['child_list'],',');
-            if($ct==0) $ct = 2;
-            else $ct += 2;
-            $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-            $listArr[$i] = array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$this->getSlt($this->utrl.Yii::app()->request->baseUrl.$val['img_url'],1),
-                "type"=>$sta,"time"=>$val['addtime'],"summary"=>$summary,"imgcount"=>$ct);
-            $i++;
-        }
-        $msg['code'] = 0;
-        $msg['msg'] = "成功";
-        $msg['data'] = $listArr;
-    }
-    /**
-     * 分类分页接口
-     * @param $type
-     * @param $msg
-     * @param $page
-     */
-    private function catepage($type,&$msg,$page)
-    {
-        if($page<1)$page=1;
-        $listArr = array();
-        $cnt = ($page-1)*20;
-        $list = AppJxNews::model()->findAll("type=:tp order by id desc limit {$cnt},20",array(":tp"=>$type));
-        $sta = $type==2?1:0;
-        foreach($list as $val)
-        {
-            $summary = mb_substr(trim(strip_tags($val['content'])),0,40,"utf-8");
-            $ct = substr_count($val['child_list'],',')+2;
-            $pass = empty($val['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$val['img_url'];
-            if($ct==2) $ct=1;
-            array_push($listArr,array("id"=>$val['id'],"title"=>$val['title'],"img_url"=>$this->getSlt($pass,$sta),
-                "type"=>$sta,"time"=>$val['addtime'],"summary"=>$summary,"imgcount"=>$ct));
-        }
-        $msg['code'] = 0;
-        $msg['msg'] = "成功";
-        $msg['data'] = $listArr;
-    }
-
-    /**
-     * 天气显示接口
-     *
-     */
-    private function weather()
-    {
-
-    }
-    public function typelist($arr)
-    {
-        $msg = $this->msgcode();
-        $type = $arr['id'];
-        $status = $arr['type'];
-        //新闻
-        if($status==0)
-        {
-            $this->cateNews($type,$msg);
-            //图片
-        }elseif($status==1)
-        {
-            $this->cateImg(2,$msg);
-            //天气
-        }elseif($status==2)
-        {
-            $this->weather();
-        }
-        echo json_encode($msg);
-    }
-
-    public function typepage($arr)
-    {
-        $msg = $this->msgcode();
-        $type = $arr['id'];
-        $status = $arr['type'];
-        $page = $arr['page'];
-        if($page<1)$page=1;
-        //新闻
-        if($status==0)
-        {
-            $this->catepage($type,$msg,$page);
-            //图片
-        }elseif($status==1)
-        {
-            $this->pageImg(2,$msg,$page);
-        }
-        echo json_encode($msg);
-    }
-
-    protected function img_revert($str)
-    {
-        if(trim($str)=="")
-        {
-            return "";
-        }else{
-            return $this->utrl.Yii::app()->request->baseUrl.$str;
-        }
-    }
-    /**
-     * 新闻详情
-     * @param type $arr
-     */
-    public function newsdesc($arr)
-    {
-        $msg = $this->msgcode();
-        $id = $arr['id'];
-        $type = $arr['type'];
-        $row = AppJxNews::model()->findByPk($id);
-        if(!empty($row))
-        {
-            $src = $row['source'];
-            if(strpos($row['source'],"《")!==false)
-            {
-                $src = ltrim($src,"《");
-            }
-            if(strpos($row['source'],"》")!==false)
-            {
-                $src = rtrim($src,"》");
-            }
-            $this->msgsucc($msg);
-            $content = str_replace("<img ","<img width='100%' ",$row['content']);
-            if($type==0)
-            {
-                $msg['data'] = array("id"=>$row['id'],"addtime"=>$row['addtime'],"title"=>$row['title']
-                ,"content"=> $content
-                ,"img_url"=>$this->img_revert($row['img_url'])
-                ,"comment"=>$row['comment']
-                ,"like"=>$row['like']
-                ,"han"=>$row['han']
-                ,"hate"=>$row['hate']
-                ,"source"=>$src
-                ,"comtype"=>$row['comtype']
-                );
-            }else
-            {
-                $tmp = array();
-                array_push($tmp,array("id"=>$row['id'],"addtime"=>$row['addtime'],"title"=>$row['title']
-                ,"content"=>$content
-                ,"img_url"=>$this->img_revert($row['img_url'])
-                ,"comment"=>$row['comment']
-                ,"like"=>$row['like']
-                ,"han"=>$row['han']
-                ,"hate"=>$row['hate']
-                ,"source"=>$src,
-                    "comtype"=>$row['comtype']));
-                if(!empty($row['child_list']))
-                {
-                    $rowLs = AppJxNews::model()->findAll("id in(".$row['child_list'].")");
-                    foreach ($rowLs as $val) {
-
-                        $sou = $val['source'];
-                        if(strpos($val['source'],"《")!==false)
-                        {
-                            $sou = ltrim($sou,"《");
-                        }
-                        if(strpos($val['source'],"》")!==false)
-                        {
-                            $sou = rtrim($sou,"》");
-                        }
-                        array_push($tmp,array("id"=>$val['id'],"addtime"=>$val['addtime'],"title"=>$val['title']
-                        ,"content"=>$val['content']
-                        ,"img_url"=>$this->img_revert($val['img_url'])
-                        ,"comment"=>$val['comment']
-                        ,"like"=>$val['like']
-                        ,"han"=>$val['han']
-                        ,"hate"=>$val['hate']
-                        ,"source"=>$sou
-                        ,"comtype"=>$val['comtype']));
-                    }
-                }
-
-                $msg['data'] = $tmp;
-            }
-        }else
-            $msg['msg'] = "文章不存在";
-        echo json_encode($msg);
-    }
     /**
      * 获取token
      * @param type $id
@@ -617,7 +357,7 @@ class V0Controller extends Controller
                 "token"=>$this->getToken($tmp),
                 "tel"=>$mod->tel,
                 "uname"=>$mod->uname,
-                "img_url"=>$this->img_revert($mod->img_url)
+                "img_url"=>$this->getUrl($mod->img_url)
             );
         }
         else
@@ -674,7 +414,7 @@ class V0Controller extends Controller
                     "id"=>$mod->id,
                     "tel"=>$mod->tel,
                     "uname"=>$mod->uname,
-                    "img_url"=>$this->img_revert($mod->img_url)
+                    "img_url"=>$this->getUrl($mod->img_url)
                 );
             }
         }
@@ -989,7 +729,7 @@ class V0Controller extends Controller
                         "id"=>$user_id,
                         "tel"=>$model->tel,
                         "uname"=>$model->uname,
-                        "img_url"=>$this->img_revert($model->img_url)
+                        "img_url"=>$this->getUrl($model->img_url)
                     );
                 }else
                 {
@@ -1011,13 +751,13 @@ class V0Controller extends Controller
         $msg = $this->msgcode();
         $user_id = $arr['user_id'];
         $token = $arr['token'];
-        $news_id = $arr['news_id'];
+        $news_id = $arr['scenic_id'];
         if(!$this->chkToken($user_id,$token))
         {
             $msg['code'] = 2;
             $msg['msg'] = "无权限，请登录";
         }else{
-            $id = AppJxCollect::model()->find("news_id={$news_id} and user_id={$user_id}");
+            $id = AppXzCollect::model()->find("scenic_id={$news_id} and user_id={$user_id}");
             $this->msgsucc($msg);
             if(empty($id))
             {
@@ -1039,14 +779,14 @@ class V0Controller extends Controller
         $msg = $this->msgcode();
         $user_id = $arr['user_id'];
         $token = $arr['token'];
-        $news_id = $arr['news_id'];
+        $news_id = $arr['scenic_id'];
         $type = $arr['type'];
         if(!$this->chkToken($user_id,$token))
         {
             $msg['code'] = 2;
             $msg['msg'] = "无权限，请登录";
         }else{
-            $id = AppJxCollect::model()->find("news_id={$news_id} and user_id={$user_id}");
+            $id = AppXzCollect::model()->find("scenic_id={$news_id} and user_id={$user_id}");
             //取消收藏
             if($type==0)
             {
@@ -1064,8 +804,8 @@ class V0Controller extends Controller
             {
                 if(empty($id))
                 {
-                    $modl = new AppJxCollect();
-                    $modl->news_id = $news_id;
+                    $modl = new AppXzCollect();
+                    $modl->scenic_id = $news_id;
                     $modl->user_id = $user_id;
                     $modl->time = time();
                     if($modl->save())
@@ -1100,20 +840,33 @@ class V0Controller extends Controller
         }else{
 
             $connection = Yii::app()->db;
-            $sql = "SELECT * FROM jx_collect left join jx_news on jx_collect.news_id = jx_news.id where jx_collect.user_id={$user_id} order by time desc limit {$cnt},20"; //构造SQL
+            $sql = "SELECT * FROM xz_collect left join xz_scenic on xz_collect.scenic_id = xz_scenic.id where xz_collect.user_id={$user_id} order by time desc limit {$cnt},20"; //构造SQL
             $sqlCom = $connection->createCommand($sql);
             $lst = $sqlCom->queryAll();
             $data = array();
             $this->msgsucc($msg);
             foreach ($lst as $value) {
-                $pass = empty($value['img_url'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['img_url'];
-                $sta = $value['type']==2?1:0;
+                $img = "";
+                if(!empty($value['img']))
+                {
+                    $imgArr = json_decode($value['img'],true);
+                    $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+                }
+                //$icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+                //$mp3 = empty($value['mp3'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['mp3'];
                 array_push($data,array(
-                    "id"=>$value['id'], //新闻编号
-                    "title"=>$value['title'],"time"=>$value['addtime'],
-                    "img_url"=>$this->getSlt($pass,0),
-                    "type"=>$sta
+                    "scenic_id"=>$value['id'], //新闻编号
+                    "ptime"=>$value['ptime'],
+                    "name"=>$value['title'],
+                    "desc"=>$value['desc'],
+                    "img"=>$img,
+                    //"icon"=>$icon,
+                    "top"=>$value['top']
+//                    "mp3"=>$mp3,
+//                    "x"=>$value['x'],
+//                    "y"=>$value['y']
                 ));
+
             }
             $msg['data'] = $data;
         }
@@ -1287,10 +1040,14 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'scenicdetails',
-            'scenic_id' => "1",
-            'page'=>1,
-            'zonecode'=>"xy3"
+            'action' => 'getuserinfo',
+            "tel"=>'18228041350',
+            'user_id' => "1",
+            "scenic_id"=>1,
+            "password"=>md5("123456"."xFl@&^852"),
+            "verifycode"=>6200,
+            "type"=>1,
+            "token"=>"9022a2f97beb2733"
         );
 
 //        $params = array(
@@ -1298,9 +1055,11 @@ class V0Controller extends Controller
 //            'user_id' => '23',
 //            'news_id' => '286',
 //            'content'=>1,
-//            'token'=>'35963755137a0653'
+//            'token'=>'c88d5135ac6b59c4 '
 //        );
+     //   xFl@&^852
 
+        //[id] => 1 [token] => c88d5135ac6b59c4
         $salt = "xFlaSd!$&258";
         $data = json_encode($params);
         $sign = md5($data.$salt);
@@ -1308,7 +1067,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
