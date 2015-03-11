@@ -48,6 +48,10 @@ class HomescenicController extends AdminSet
         
         $top = Yii::app()->getRequest()->getParam("scien_top", ""); //游玩时间
         $content = Yii::app()->getRequest()->getParam("scien_content", ""); //游玩时间
+
+        $lng = Yii::app()->getRequest()->getParam("scien_lng", ""); //经度
+        $lat = Yii::app()->getRequest()->getParam("scien_lat", ""); //纬度
+        $around = Yii::app()->getRequest()->getParam("scien_around", ""); //景点范围
        
         $img_url = "";
         if(!empty($_FILES['scien_mp3']['name']))
@@ -128,6 +132,11 @@ class HomescenicController extends AdminSet
             $model->add = $add;
             $model->x = $x;
             $model->y = $y;
+
+            $model->lng = $lng;
+            $model->lat = $lat;
+            $model->around = $around;
+
             $model->zone = $zone;
             if($model->save())
             {
@@ -270,6 +279,10 @@ class HomescenicController extends AdminSet
         
         $top = Yii::app()->getRequest()->getParam("scien_top", ""); //游玩时间
         $content = Yii::app()->getRequest()->getParam("scien_content", ""); //游玩时间
+        $lng = Yii::app()->getRequest()->getParam("scien_lng", ""); //经度
+        $lat = Yii::app()->getRequest()->getParam("scien_lat", ""); //纬度
+        $around = Yii::app()->getRequest()->getParam("scien_around", ""); //景点范围
+
         $model = AppXzScenic::model()->findByPk($id);
         $img_url = $model->mp3;
         if(!empty($_FILES['scien_mp3']['name']))
@@ -346,6 +359,9 @@ class HomescenicController extends AdminSet
             $model->add = $add;
             $model->x = $x;
             $model->y = $y;
+            $model->lng = $lng;
+            $model->lat = $lat;
+            $model->around = $around;
             $model->zone = $zone;
             if($model->save())
             {

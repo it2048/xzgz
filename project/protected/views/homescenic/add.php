@@ -34,6 +34,15 @@
                 <input  name="scien_y" type="text" class="required" size="10" value="">
             </p>
             <p class="nowrap">
+                <label>经度，纬度：</label>
+                <input  name="scien_lng" type="text" class="required" size="10" value="">
+                <input  name="scien_lat" type="text" class="required" size="10" value="">
+            </p>
+            <p class="nowrap">
+                <label>景点范围：</label>
+                <input  name="scien_around" type="text" class="textInput required" size="20" value=""><span class="info"> 单位:米</span>
+            </p>
+            <p class="nowrap">
                 <label>游玩时间：</label>
                 <input  name="scien_ptime" type="text" class="textInput" size="10" value=""><span class="info"> 单位:分钟</span>
             </p>

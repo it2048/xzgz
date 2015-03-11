@@ -36,6 +36,15 @@
                 <input  name="scien_y" type="text" class="required" size="10" value="<?php echo $models->y;?>">
             </p>
             <p class="nowrap">
+                <label>经度，纬度：</label>
+                <input  name="scien_lng" type="text" class="required" size="10" value="<?php echo $models->lng;?>">
+                <input  name="scien_lat" type="text" class="required" size="10" value="<?php echo $models->lat;?>">
+            </p>
+            <p class="nowrap">
+                <label>景点范围：</label>
+                <input  name="scien_around" type="text" class="textInput required" size="20" value="<?php echo $models->around;?>"><span class="info"> 单位:米</span>
+            </p>
+            <p class="nowrap">
                 <label>游玩时间：</label>
                 <input  name="scien_ptime" type="text" class="textInput" size="10" value="<?php echo $models->ptime;?>"><span class="info"> 单位:分钟</span>
             </p>

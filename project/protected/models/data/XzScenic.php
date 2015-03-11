@@ -18,6 +18,9 @@
  * @property string $y
  * @property string $zone
  * @property string $icon
+ * @property string $lat
+ * @property string $lng
+ * @property string $around
  */
 class XzScenic extends CActiveRecord
 {
@@ -47,15 +50,16 @@ class XzScenic extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, content, top, atime, zone', 'required'),
+			array('title, content, top, atime, zone, lat, lng, around', 'required'),
 			array('top, atime, ptime', 'numerical', 'integerOnly'=>true),
 			array('title, mp3, add', 'length', 'max'=>128),
 			array('x, y, zone', 'length', 'max'=>32),
 			array('icon', 'length', 'max'=>64),
+			array('lat, lng, around', 'length', 'max'=>45),
 			array('desc, img', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, title, desc, content, top, mp3, atime, ptime, img, add, x, y, zone, icon', 'safe', 'on'=>'search'),
+			array('id, title, desc, content, top, mp3, atime, ptime, img, add, x, y, zone, icon, lat, lng, around', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,6 +94,9 @@ class XzScenic extends CActiveRecord
 			'y' => 'Y',
 			'zone' => 'Zone',
 			'icon' => 'Icon',
+			'lat' => 'Lat',
+			'lng' => 'Lng',
+			'around' => 'Around',
 		);
 	}
 
@@ -118,6 +125,9 @@ class XzScenic extends CActiveRecord
 		$criteria->compare('y',$this->y,true);
 		$criteria->compare('zone',$this->zone,true);
 		$criteria->compare('icon',$this->icon,true);
+		$criteria->compare('lat',$this->lat,true);
+		$criteria->compare('lng',$this->lng,true);
+		$criteria->compare('around',$this->around,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

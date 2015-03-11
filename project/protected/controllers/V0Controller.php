@@ -133,6 +133,34 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     *  @desc 根据两点间的经纬度计算距离
+     *  @param float $lat 纬度值
+     *  @param float $lng 经度值
+     */
+    private function getDistance($lat1, $lng1, $lat2, $lng2)
+    {
+        $earthRadius = 6367000; //approximate radius of earth in meters
+
+        /*
+          Convert these degrees to radians
+          to work with the formula
+        */
+
+        $lat1 = ($lat1 * pi() ) / 180;
+        $lng1 = ($lng1 * pi() ) / 180;
+
+        $lat2 = ($lat2 * pi() ) / 180;
+        $lng2 = ($lng2 * pi() ) / 180;
+
+        $calcLongitude = $lng2 - $lng1;
+        $calcLatitude = $lat2 - $lat1;
+        $stepOne = pow(sin($calcLatitude / 2), 2) + cos($lat1) * cos($lat2) * pow(sin($calcLongitude / 2), 2);  $stepTwo = 2 * asin(min(1, sqrt($stepOne)));
+        $calculatedDistance = $earthRadius * $stepTwo;
+
+        return round($calculatedDistance);
+    }
+
     public function rockarock($arr)
     {
         $msg = $this->msgcode();
@@ -142,24 +170,13 @@ class V0Controller extends Controller
         $data = json_decode(RemoteCurl::getInstance()->get($api),true);
         if($data['status']==0)
         {
-
             $block = $data['result']['formatted_address'];  //具体到每个街道
             $model = AppXzScenic::model()->findAll("1=1 order by rand() limit 1");
 
-            $zone = TmpList::$zone_list[$model[0]->zone];
-            $jl = sprintf('http://api.map.baidu.com/direction/v1/routematrix?mode=driving&origins=%s,%s&destinations=%s&output=json&ak=0QDaLukGIKr22SwQKTWNxGSz',$x,
-                $y,$zone);
-            $jlArr = json_decode(RemoteCurl::getInstance()->get($jl),true);
-
-            $kilm = "";
-            if($jlArr['status']==0)
-            {
-                $kilm = $jlArr["result"]['elements']['0']['distance']['value'];
-
-                $kilm = (floor($kilm/1000))."千米";
-            }
-
             $allList = $model[0];
+            $kilm = $this->getDistance($x,$y,$allList['lng'],$allList['lat']);
+            $kilm = $kilm>1000?(floor($kilm/1000))."千米":$kilm."米";
+
             $img = "";
             if(!empty($allList['img']))
             {
@@ -977,7 +994,7 @@ class V0Controller extends Controller
     }
 
     /**
-     * 获取收藏列表
+     * 修改密码
      * @param $arr
      */
     public function updatepassword($arr)
@@ -989,7 +1006,7 @@ class V0Controller extends Controller
         $umode = AppJxUser::model()->find("tel=:tl",array(":tl"=>$tel));
         if(!empty($umode))
         {
-            if($umode->check != $vcode)
+            if("9999" != $vcode)
             {
                 $umode->check = "";
                 $umode->save();
