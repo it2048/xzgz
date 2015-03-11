@@ -133,6 +133,58 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    public function rockarock($arr)
+    {
+        $msg = $this->msgcode();
+        $x = $arr['y'];
+        $y = $arr['x'];
+        $api = sprintf("http://api.map.baidu.com/geocoder/v2/?ak=0QDaLukGIKr22SwQKTWNxGSz&location=%s,%s&output=json&pois=0",$x,$y);
+        $data = json_decode(RemoteCurl::getInstance()->get($api),true);
+        if($data['status']==0)
+        {
+
+            $block = $data['result']['formatted_address'];  //具体到每个街道
+            $model = AppXzScenic::model()->findAll("1=1 order by rand() limit 1");
+
+            $zone = TmpList::$zone_list[$model[0]->zone];
+            $jl = sprintf('http://api.map.baidu.com/direction/v1/routematrix?mode=driving&origins=%s,%s&destinations=%s&output=json&ak=0QDaLukGIKr22SwQKTWNxGSz',$x,
+                $y,$zone);
+            $jlArr = json_decode(RemoteCurl::getInstance()->get($jl),true);
+
+            $kilm = "";
+            if($jlArr['status']==0)
+            {
+                $kilm = $jlArr["result"]['elements']['0']['distance']['value'];
+
+                $kilm = (floor($kilm/1000))."千米";
+            }
+
+            $allList = $model[0];
+            $img = "";
+            if(!empty($allList['img']))
+            {
+                $imgArr = json_decode($allList['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+            }
+            $this->msgsucc($msg);
+            $msg['data'] = array(
+                "scenic_id"=>$allList['id'],
+                "name"=>$allList['title'],
+                "img"=>$img,
+                "address"=>$allList['add'],
+                "desc"=>$allList['desc'],
+                "top"=>$allList['top'],
+                "block"=>$block,
+                "distance"=>$kilm,
+                "ptime"=>$allList['ptime'],
+            );
+        }else{
+            $msg['code'] = 2;
+            $msg['msg'] = "无法定位，请开启GPS";
+        }
+        echo json_encode($msg);
+    }
+
     /**
      * 获取新闻列表和分页接口
      * @param $arr
@@ -1067,9 +1119,9 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'register',
-            "tel"=>'18228041351',
-            'user_id' => "1",
+            'action' => 'rockarock',
+            "x"=>'101.88',
+            'y' => "31.88",
             "scenic_id"=>1,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>2322,
