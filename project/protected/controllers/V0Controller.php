@@ -37,6 +37,48 @@ class V0Controller extends Controller
         $msg['data'] = array("user"=>$x,"id"=>$y);
         echo json_encode($msg);
     }
+    
+    public function setplay($arr)
+    {
+        $msg = $this->msgcode();
+        $id = $arr['scenic_id'];
+        $x = $arr['y'];
+        $y = $arr['x'];
+        $user_id = $arr['user_id'];
+        $token = $arr['token'];
+
+        if(!$this->chkToken($user_id,$token))
+        {
+            $msg['code'] = 2;
+            $msg['msg'] = "无权限，请登录";
+        }else{
+
+            $model = AppXzScenic::model()->findByPk($id);
+            if(empty($model))
+            {
+                $msg['msg'] = '景点未找到';
+            }
+            else
+            {
+                $ar = $this->getDistance($y,$x,$model->lng,$model->lat);
+                if($ar<$model->around)
+                {
+                    
+                    $pk = AppXzFly::model()->findAll("zone='{$id}' and user_id={$user_id}");
+                    if(empty($pk))
+                    {
+                        $ml = new AppXzFly();
+                        $ml->zone = $id;
+                        $ml->user_id = $user_id;
+                        $ml->time = time();
+                        $ml->save();
+                        $this->msgsucc($msg);
+                    }
+                }
+            }
+        }
+        echo json_encode($msg);
+    }
 
     public function getzone($arr)
     {
@@ -137,6 +179,7 @@ class V0Controller extends Controller
      *  @desc 根据两点间的经纬度计算距离
      *  @param float $lat 纬度值
      *  @param float $lng 经度值
+     * 单位米
      */
     private function getDistance($lat1, $lng1, $lat2, $lng2)
     {
@@ -918,7 +961,7 @@ class V0Controller extends Controller
         }else{
 
             $connection = Yii::app()->db;
-            $sql = "SELECT * FROM xz_collect left join xz_scenic on xz_collect.scenic_id = xz_scenic.id where xz_collect.user_id={$user_id} order by time desc limit {$cnt},20"; //构造SQL
+            $sql = "SELECT * FROM xz_collect left join xz_scenic on xz_collect.scenic_id = xz_scenic.id where xz_collect.user_id={$user_id} and xz_scenic.title is not null order by time desc limit {$cnt},20"; //构造SQL
             $sqlCom = $connection->createCommand($sql);
             $lst = $sqlCom->queryAll();
             $data = array();
@@ -951,6 +994,41 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    public function getplaylist($arr)
+    {
+        $msg = $this->msgcode();
+        $user_id = $arr['user_id'];
+        $token = $arr['token'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+        $cnt = ($page-1)*21;
+        if(!$this->chkToken($user_id,$token))
+        {
+            $msg['code'] = 2;
+            $msg['msg'] = "无权限，请登录";
+        }else{
+            
+            $connection = Yii::app()->db;
+            $sql = "SELECT * FROM xz_fly left join xz_scenic on xz_fly.zone = xz_scenic.id where xz_fly.user_id={$user_id} and xz_scenic.title is not null order by time desc limit {$cnt},21"; //构造SQL
+            $sqlCom = $connection->createCommand($sql);
+            $lst = $sqlCom->queryAll();
+            $data = array();
+            $this->msgsucc($msg);
+            $total = AppXzScenic::model()->count(); //总数
+            $see = count($lst); //浏览数
+            $pre = round(($see/$total)*100); //百分比
+            foreach ($lst as $value) {
+                $icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+                array_push($data,array(
+                    "scenic_id"=>$value['id'], //新闻编号
+                    "name"=>$value['title'],
+                    "icon"=>$icon
+                ));
+            }
+            $msg['data'] = array("list"=>$data,"total"=>$total,"see"=>$see,"pre"=>$pre);
+        }
+        echo json_encode($msg);
+    }
     /**
      * 发送验证码
      * @param type $arr
@@ -1136,14 +1214,16 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'rockarock',
+            'action' => 'getplaylist',
+            'tel'=>'18228041350',
+            "password"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
-            "scenic_id"=>1,
+            "scenic_id"=>2,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>2322,
-            "type"=>1,
-            "token"=>"9022a2f97beb2733"
+            "user_id"=>1,
+            "token"=>"1d9dd319779f42a2"
         );
 
 //        $params = array(
