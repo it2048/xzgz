@@ -332,7 +332,7 @@ class V0Controller extends Controller
             $msg['msg'] = "商店编号参数未传入";
         }else
         {
-            $id = $arr['shop_id'];
+            $id = $arr['shopid'];
             $allList = AppXzShop::model()->findByPk($id);
             if(!empty($allList))
             {
@@ -1334,8 +1334,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-
+        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+echo RemoteCurl::getInstance()->post($url,$rtnList);die();
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
