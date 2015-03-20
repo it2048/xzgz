@@ -144,7 +144,6 @@ class HomescenicController extends AdminSet
                 $msg['msg'] = "添加成功";
             }else
             {
-                print_r($model->getErrors());
                 $msg['msg'] = "存入数据库异常";
             }
         }else{
@@ -369,7 +368,6 @@ class HomescenicController extends AdminSet
                 $msg['msg'] = "更新成功";
             }else
             {
-                print_r($model->getErrors());
                 $msg['msg'] = "存入数据库异常";
             }
         }else{

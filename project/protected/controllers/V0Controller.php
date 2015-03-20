@@ -282,6 +282,97 @@ class V0Controller extends Controller
         $msg['data'] = $data;
         echo json_encode($msg);
     }
+
+    /**
+     * 获取新闻列表和分页接口
+     * @param $arr
+     *
+     */
+    public function getshoplist($arr)
+    {
+        $msg = $this->msgcode();
+        $zone = $arr['zonecode'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("zone='{$zone}'");
+        $criteria->limit = 20;
+        $criteria->offset = 20 * ($page - 1);
+        $allList = AppXzShop::model()->findAll($criteria);
+        $data = array();
+        foreach ($allList as $value) {
+            $img = "";
+            if(!empty($value['img']))
+            {
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+            }
+            array_push($data,array(
+                "shop_id"=>$value['id'], //商店编号
+                "name"=>$value['name'],
+                "star"=>$value['star'],
+                "tag"=>$value['tag'],
+                "money"=>$value['money'],
+                "tag"=>$value['tag'],
+                "img"=>$img,
+                "lng"=>$value['lng'],
+                "lat"=>$value['lat']
+            ));
+        }
+        $this->msgsucc($msg);
+        $msg['data'] = $data;
+        echo json_encode($msg);
+    }
+
+    public function shopdetails($arr)
+    {
+        $msg = $this->msgcode();
+        if(empty($arr['shopid']))
+        {
+            $msg['msg'] = "商店编号参数未传入";
+        }else
+        {
+            $id = $arr['shop_id'];
+            $allList = AppXzShop::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $this->msgsucc($msg);
+                $mgArr = array();
+                if(!empty($allList->img))
+                {
+                    $imgArr = json_decode($allList->img,true);
+                    if(is_array($imgArr))
+                    {
+                        foreach ($imgArr as $val) {
+                            array_push($mgArr,array("url"=>$this->getUrl($val['url']),"desc"=>$val['desc']));
+                        }
+                    }
+                }
+                $msg['data'] = array(
+                    "shop_id"=>$allList->id,
+                    "name"=>$allList->name,
+                    "imgList"=>$mgArr,
+                    "star"=>$allList->star,
+                    "money"=>$allList->money,
+                    "tag"=>$allList->tag,
+                    "zone"=>$allList->zone,
+                    "tel"=>$allList->tel,
+                    "lat"=>$allList->lat,
+                    "lng"=>$allList->lng,
+                    "add"=>$allList->add,
+                    "taste"=>$allList->taste,
+                    "suround"=>$allList->suround,
+                    "service"=>$allList->service,
+                    "office"=>$allList->office,
+                    "content"=>$allList->content
+                );
+            }else
+            {
+                $msg['msg'] = "商店不存在";
+            }
+        }
+        echo json_encode($msg);
+    }
     
     /**
      * 获取新闻详情
@@ -1214,8 +1305,8 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'getplaylist',
-            'tel'=>'18228041350',
+            'action' => 'shopdetails',
+            'shopid'=>'2',
             "password"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
