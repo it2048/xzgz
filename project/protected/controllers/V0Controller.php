@@ -163,7 +163,14 @@ class V0Controller extends Controller
                 $this->msgsucc($msg);
                 $model = $data['results'][0]['weather_data'];
                 $start = strpos($model[0]['date'],"：");
-                $crent = mb_substr($model[0]['date'],$start+3,-1);
+                if(strpos($model[0]['date'],"℃")===false)
+                {
+                    $crent = $model[0]['temperature'];
+                    $crent = str_replace("℃","",$crent);
+                }else
+                {
+                    $crent = mb_substr($model[0]['date'],$start+3,-1);
+                }
                 $day = "星期".mb_substr($model[0]['date'],3,3);
                 $allList = array("temperature"=>$crent,"date"=>date("Y.m.d",time()),
                     "imgcode"=>$this->getW($model[0]['weather']),"weather"=>$model[0]['weather'],"day"=>$day
@@ -1305,8 +1312,8 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'shopdetails',
-            'shopid'=>'2',
+            'action' => 'homenews',
+            'zonecode'=>'xy3',
             "password"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
@@ -1334,8 +1341,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
