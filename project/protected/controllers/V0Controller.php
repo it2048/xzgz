@@ -74,7 +74,15 @@ class V0Controller extends Controller
                         $ml->save();
                         $this->msgsucc($msg);
                     }
+                    else
+                    {
+                        $msg['msg'] = '你已经到过这里了';
+                    }
+                }else
+                {
+                    $msg['msg'] = '当前不在景点范围内';
                 }
+
             }
         }
         echo json_encode($msg);
