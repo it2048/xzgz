@@ -752,7 +752,7 @@ class V0Controller extends Controller
             $msg['msg'] = "存在必填项为空，请确定参数满足条件";
             echo json_encode($msg);die();
         }
-        $model = AppJxUser::model()->find("tel=:tl",array("tl"=>$tel));
+        $model = AppJxUser::model()->find("tel=:tl and type=1 and password='123456'",array("tl"=>$tel));
         if(!empty($model))
         {
             if("9999" != $vcode)
@@ -782,7 +782,7 @@ class V0Controller extends Controller
             }
         }else
         {
-            $msg['msg'] = "未验证手机号码";
+            $msg['msg'] = "号码已被注册";
         }
         echo json_encode($msg);
     }
@@ -1135,37 +1135,50 @@ class V0Controller extends Controller
     {
         $msg = $this->msgcode();
         $tel = $arr['tel'];
+        $type = $arr['type']==1?1:0;
         $umode = AppJxUser::model()->find("tel=:tl",array(":tl"=>$tel));
-        if(empty($umode))
+        //改密码
+        if($type==1)
         {
-            $msg['msg'] = "用户不存在";
-            $model = new AppJxUser();
-            $model->tel = $tel;
-            $salt = "xFl@&^852";
-            $model->password = md5("123456".$salt);
-            $model->fhtime = time();
-            $model->ctime = time();
-            //注册用户默认是被封号的
-            $model->type = 1;
-            list($msec, $sec) = explode(' ', microtime());
-            $code = substr($msec,4,4);
-            $model->check = $code;
-
-            if($model->save())
+            if(empty($umode))
             {
-                $this->msgsucc($msg);
+                $msg['msg'] = "用户不存在";
+            }else{
+                list($msec, $sec) = explode(' ', microtime());
+                $code = substr($msec,4,4);
+                $umode->check = $code;
+                if($umode->save())
+                {
+                    $this->msgsucc($msg);
+                }
             }
-
         }else
         {
-            list($msec, $sec) = explode(' ', microtime());
-            $code = substr($msec,4,4);
-            $umode->check = $code;
-            if($umode->save())
+            if(empty($umode))
             {
-                $this->msgsucc($msg);
+                $msg['msg'] = "用户不存在";
+                $model = new AppJxUser();
+                $model->tel = $tel;
+                $model->password = "123456";
+                $model->fhtime = time();
+                $model->ctime = time();
+                //注册用户默认是被封号的
+                $model->type = 1;
+                list($msec, $sec) = explode(' ', microtime());
+                $code = substr($msec,4,4);
+                $model->check = $code;
+
+                if($model->save())
+                {
+                    $this->msgsucc($msg);
+                }
+
+            }else
+            {
+                $msg['msg'] = "用户已经存在";
             }
         }
+
         echo json_encode($msg);
     }
 
@@ -1312,14 +1325,15 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'homenews',
-            'zonecode'=>'xy3',
+            'action' => 'register',
+            'tel'=>'18611111111',
+            'type'=>0,
             "password"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
             "scenic_id"=>2,
             "password"=>md5("123456"."xFl@&^852"),
-            "verifycode"=>2322,
+            "verifycode"=>9999,
             "user_id"=>1,
             "token"=>"1d9dd319779f42a2"
         );
