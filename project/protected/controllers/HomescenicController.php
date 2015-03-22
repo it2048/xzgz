@@ -43,7 +43,7 @@ class HomescenicController extends AdminSet
         $desc = Yii::app()->getRequest()->getParam("scien_desc", ""); //简要描述
         $add = Yii::app()->getRequest()->getParam("scien_add", ""); //地址
         $x = Yii::app()->getRequest()->getParam("scien_x", ""); //x坐标
-        $y = Yii::app()->getRequest()->getParam("scien_x", ""); //y坐标
+        $y = Yii::app()->getRequest()->getParam("scien_y", ""); //y坐标
         $ptime = Yii::app()->getRequest()->getParam("scien_ptime", ""); //游玩时间
         
         $top = Yii::app()->getRequest()->getParam("scien_top", ""); //游玩时间
@@ -273,7 +273,7 @@ class HomescenicController extends AdminSet
         $desc = Yii::app()->getRequest()->getParam("scien_desc", ""); //简要描述
         $add = Yii::app()->getRequest()->getParam("scien_add", ""); //地址
         $x = Yii::app()->getRequest()->getParam("scien_x", ""); //x坐标
-        $y = Yii::app()->getRequest()->getParam("scien_x", ""); //y坐标
+        $y = Yii::app()->getRequest()->getParam("scien_y", ""); //y坐标
         $ptime = Yii::app()->getRequest()->getParam("scien_ptime", ""); //游玩时间
         
         $top = Yii::app()->getRequest()->getParam("scien_top", ""); //游玩时间
