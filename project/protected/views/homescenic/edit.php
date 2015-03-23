@@ -20,11 +20,17 @@
                 <label>简要描述：</label>
                 <input  name="scien_desc" id="scien_desc" type="text" class="textInput" size="50" value="<?php echo $models->desc;?>">
             </p>
-            <?php if($models->icon!=""){?><p class="nowrap"><label>小图标：</label><img width="120" height="120" src="<?php echo Yii::app()->request->baseUrl.$models->icon;?>"></img></p>
+            <?php if($models->icon!=""){?><p class="nowrap"><label>小图标：</label><img width="120" height="120" src="<?php echo Yii::app()->request->baseUrl.$models->icon;?>"></p>
             <?php }?>
             <p class="nowrap">
-                <label>更换封面图片：</label>
+                <label>更换小图标：</label>
                 <input name="scien_icon" type="file">
+            </p>
+            <?php if($models->hicon!=""){?><p class="nowrap"><label>灰色小图标：</label><img width="120" height="120" src="<?php echo Yii::app()->request->baseUrl.$models->hicon;?>"></p>
+            <?php }?>
+            <p class="nowrap">
+                <label>更换灰色小图标：</label>
+                <input name="scien_hicon" type="file">
             </p>
              <p class="nowrap">
                 <label>地址描述：</label>

@@ -24,6 +24,10 @@
                 <label>小图标上传：</label>
                 <input name="scien_icon" type="file">
             </p>
+            <p class="nowrap">
+                <label>灰色小图标上传：</label>
+                <input name="scien_hicon" type="file">
+            </p>
              <p class="nowrap">
                 <label>地址描述：</label>
                 <input  name="scien_add" id="scien_add" type="text" class="textInput" size="50" value="">
