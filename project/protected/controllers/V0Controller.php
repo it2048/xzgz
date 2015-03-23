@@ -1099,6 +1099,80 @@ class V0Controller extends Controller
         }
         echo json_encode($msg);
     }
+    
+    public function usercenter($arr)
+    {
+        $msg = $this->msgcode();
+        $user_id = $arr['user_id'];
+        $token = $arr['token'];
+       
+        if($this->chkToken($user_id,$token))
+        {
+            $msg['code'] = 2;
+            $msg['msg'] = "无权限，请登录";
+        }else{
+            $lst = AppXzScenic::model()->findAll();
+            $fly = AppXzFly::model()->findAll("user_id={$user_id}");
+            $ch = AppXzAlias::model()->findAll("user_id={$user_id}");
+            $ck = AppXzAchieve::model()->findAll();
+            $cct = AppXzCollect::model()->count("user_id={$user_id}");
+
+            $paly = array();
+            foreach ($fly as $value) {
+                array_push($paly, $value['zone']);
+            }
+            
+            $charr = array();
+            foreach ($ch as $value) {
+                array_push($charr, $value['alias_id']);
+            }
+
+            $sec = array();
+            $sec['user'] = array("name"=>"我的","total"=>0,"play"=>0,"per"=>0,"list"=>array());
+            foreach ($ck as $value){
+                $sec['user']['total']++;
+                if(in_array($value['id'], $charr))
+                {
+                    $icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+                    $sec['user']['play']++;
+                }else
+                {
+                    $icon = empty($value['hicon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['hicon'];
+                }
+                array_push($sec['user']['list'],array(
+                    "scenic_id"=>$value['id'],
+                    "name"=>$value['title'],
+                    "icon"=>$icon
+                ));
+            }
+            foreach (TmpList::$zone_list as $key => $value) {
+                $sec[$key] = array("name"=>rtrim($value,"县"),"total"=>0,"play"=>0,"per"=>0,"list"=>array());
+            }
+            foreach ($lst as $value){
+                $sec[$value['zone']]['total']++;
+                if(in_array($value['id'], $paly))
+                {
+                    $icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+                    $sec[$value['zone']]['play']++;
+                }else
+                {
+                    $icon = empty($value['hicon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['hicon'];
+                }
+                array_push($sec[$value['zone']]['list'],array(
+                    "scenic_id"=>$value['id'],
+                    "name"=>$value['title'],
+                    "icon"=>$icon
+                ));
+            }
+            foreach ($sec as $k=>$val)
+            {
+                $sec[$k]['per'] = round(($val['play']/$val['total'])*100);
+            }
+            $this->msgsucc($msg);
+            $msg['data'] = array("collect"=>$cct,"play"=>count($fly),"list"=>$sec);
+        }
+        echo json_encode($msg);
+    }
 
     public function getplaylist($arr)
     {
@@ -1333,7 +1407,7 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'register',
+            'action' => 'usercenter',
             'tel'=>'18611111111',
             'type'=>0,
             "password"=>md5("123456"."xFl@&^852"),
