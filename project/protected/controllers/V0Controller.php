@@ -1146,7 +1146,7 @@ class V0Controller extends Controller
                 ));
             }
             foreach (TmpList::$zone_list as $key => $value) {
-                $sec[$key] = array("name"=>rtrim($value,"县"),"total"=>0,"play"=>0,"per"=>0,"list"=>array());
+                $sec[$key] = array("name"=>str_replace("县","",$value),"total"=>0,"play"=>0,"per"=>0,"list"=>array());
             }
             foreach ($lst as $value){
                 $sec[$value['zone']]['total']++;
