@@ -12,7 +12,14 @@ class HomescenicController extends AdminSet
         $pages['pageNum'] = Yii::app()->getRequest()->getParam("pageNum", 1); //当前页
         $pages['countPage'] = Yii::app()->getRequest()->getParam("countPage", 0); //总共多少记录
         $pages['numPerPage'] = Yii::app()->getRequest()->getParam("numPerPage", 50); //每页多少条数据
+
+        $pages['zone_type'] = Yii::app()->getRequest()->getParam("zone_type", "all_zone"); //每页多少条数据
+        $pages['sec_name'] = Yii::app()->getRequest()->getParam("sec_name", ""); //每页多少条数据
+
         $criteria = new CDbCriteria;
+        $pages['zone_type']!="all_zone"&&$criteria->addCondition("zone='{$pages['zone_type']}'");
+        !empty($pages['sec_name'])&&$criteria->addSearchCondition('title',$pages['sec_name']);
+
         $pages['countPage'] = AppXzScenic::model()->count($criteria);
         $criteria->limit = $pages['numPerPage'];
         $criteria->offset = $pages['numPerPage'] * ($pages['pageNum'] - 1);

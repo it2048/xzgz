@@ -1,14 +1,36 @@
-<form id="pagerForm" onsubmit="return navTabSearch(this);" action="<?php echo Yii::app()->createAbsoluteUrl('homescenic/index'); ?>" method="post">
-    <input type="hidden" name="pageNum" value="<?php echo $pages['pageNum'];?>" /><!--【必须】value=1可以写死-->
-    <input type="hidden" name="numPerPage" value="50" /><!--【可选】每页显示多少条-->
-</form>
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" action="<?php echo Yii::app()->createAbsoluteUrl('homescenic/index'); ?>" method="post">
+        <input type="hidden" name="pageNum" value="<?php echo $pages['pageNum'];?>" /><!--【必须】value=1可以写死-->
+        <input type="hidden" name="numPerPage" value="50" /><!--【可选】每页显示多少条-->
+        <div class="searchBar">
+            <table class="searchContent">
+                <tbody><tr>
+                    <td>
+                        <select class="combox" name="zone_type">
+                            <option value="all_zone">所有地区</option>
+                            <?php foreach(TmpList::$zone_list as $k=>$val){
+                                $ps = $pages['zone_type']==$k?'selected="selected"':"";
+                                printf('<option value="%s" %s>%s</option>',$k,$ps,$val);
+                            } ?>
+                        </select>
+                    </td>
+                    <td>
+                        景区名称：<input type="text" name="sec_name" class="textInput" value="<?php echo $pages['sec_name'];?>">
+                    </td>
+                    <td><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></td>
+                </tr>
+                </tbody></table>
+        </div>
+    </form>
+</div>
+
 <div class="pageContent">
     <div class="panelBar">
         <ul class="toolBar">
             <li><a class="add" mask="true" height="560" width="700" target="dialog" href="<?php echo Yii::app()->createAbsoluteUrl('homescenic/newsadd');?>"><span>添加</span></a></li>
         </ul>
     </div>
-    <table class="table" width="1040" layoutH="76">
+    <table class="table" width="1040" layoutH="110">
         <thead>
         <tr>
             <th width="60">标题</th>
