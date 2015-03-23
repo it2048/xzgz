@@ -1,7 +1,3 @@
-<style type="text/css">
-    .uploadify-queue{ display: none;
-    }
-</style>
 <div class="pageContent">
     <form method="post" action="<?php echo Yii::app()->createAbsoluteUrl('homeshop/newssave'); ?>" class="pageForm required-validate" onsubmit="return iframeCallback(this, viData);" enctype="multipart/form-data">
         <div class="pageFormContent" layoutH="56">
