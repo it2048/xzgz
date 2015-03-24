@@ -116,7 +116,7 @@ class V0Controller extends Controller
                 $msg['msg'] = "您当前不在甘孜";
             }
         }else{
-            $msg['code'] = 2;
+            $msg['code'] = 4;
             $msg['msg'] = "无法定位，请开启GPS";
         }
         echo json_encode($msg);
