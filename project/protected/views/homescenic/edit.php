@@ -52,7 +52,7 @@
             </p>
             <p class="nowrap">
                 <label>游玩时间：</label>
-                <input  name="scien_ptime" type="text" class="textInput" size="10" value="<?php echo $models->ptime;?>"><span class="info"> 单位:分钟</span>
+                <input  name="scien_ptime" type="text" class="textInput" size="20" value="<?php echo $models->ptime;?>"><span class="info"> 例如:1天,2小时</span>
             </p>
             <p>
                 <label>景点状态：</label>
