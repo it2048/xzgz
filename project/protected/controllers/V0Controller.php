@@ -1105,8 +1105,7 @@ class V0Controller extends Controller
         $msg = $this->msgcode();
         $user_id = $arr['user_id'];
         $token = $arr['token'];
-       
-        if($this->chkToken($user_id,$token))
+        if(!$this->chkToken($user_id,$token))
         {
             $msg['code'] = 2;
             $msg['msg'] = "无权限，请登录";
@@ -1416,8 +1415,8 @@ class V0Controller extends Controller
             "scenic_id"=>2,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
-            "user_id"=>1,
-            "token"=>"1d9dd319779f42a2"
+            "user_id"=>4,
+            "token"=>"7c0dbc3cabe501ad"
         );
 
 //        $params = array(
