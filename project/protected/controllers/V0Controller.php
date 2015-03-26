@@ -43,9 +43,9 @@ class V0Controller extends Controller
     {
         if(empty($this->user_id)||empty($this->token)||!$this->chkToken($this->user_id,$this->token))
         {
-            $msg['notice'] = array();
+            $msg['notice'] = array("name"=>"");
         }else{
-            $arr = array();
+            $arr = array("name"=>"");
             $mld = AppXzFly::model()->find("status=1");
             if(empty($mld))
             {
