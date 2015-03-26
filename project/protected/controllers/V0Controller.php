@@ -55,11 +55,11 @@ class V0Controller extends Controller
                     $mpd->status = 0;
                     $mpd->save();
                     $model = AppXzAchieve::model()->find("id={$mpd->alias_id}");
-                    $arr = array("name"=>"{$model->title}");
+                    $arr = array("name"=>"恭喜！【{$model->title}】已达成！");
                 }
             }else{
                 $model = AppXzScenic::model()->find("id={$mld->zone}");
-                $arr = array("name"=>"浏览过{$model->title}");
+                $arr = array("name"=>"恭喜！【浏览过{$model->title}】已达成！");
                 $mld->status = 0;
                 $mld->save();
             }
