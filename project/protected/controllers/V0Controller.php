@@ -43,7 +43,7 @@ class V0Controller extends Controller
     {
         if(empty($this->user_id)||empty($this->token)||!$this->chkToken($this->user_id,$this->token))
         {
-            $msg['data']['notice'] = array();
+            $msg['notice'] = array();
         }else{
             $arr = array();
             $mld = AppXzFly::model()->find("status=1");
@@ -63,7 +63,7 @@ class V0Controller extends Controller
                 $mld->status = 0;
                 $mld->save();
             }
-            $msg['data']['notice'] = $arr;
+            $msg['notice'] = $arr;
         }
 
     }
