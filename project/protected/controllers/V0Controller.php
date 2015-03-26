@@ -58,7 +58,6 @@ class V0Controller extends Controller
                     $arr = array("name"=>"{$model->title}");
                 }
             }else{
-
                 $model = AppXzScenic::model()->find("id={$mld->zone}");
                 $arr = array("name"=>"浏览过{$model->title}");
                 $mld->status = 0;
@@ -622,6 +621,7 @@ class V0Controller extends Controller
         if(!empty($mod)&&md5($password.$salt)==$mod->password)
         {
             $this->msgsucc($msg);
+            $this->alias($mod->id,2);
             $msg['data'] = array("id"=>$mod->id,
                 "token"=>$this->getToken($tmp),
                 "tel"=>$mod->tel,
@@ -837,6 +837,7 @@ class V0Controller extends Controller
                 {
                     $this->msgsucc($msg);
                     $id = $model->attributes['id'];
+                    $this->alias($id,1);
                     $msg['data'] = array("id"=>$id,
                         "token"=>$this->getToken($model));
                 }else
@@ -850,6 +851,20 @@ class V0Controller extends Controller
         }
         $this->getNotice($msg);
         echo json_encode($msg);
+    }
+
+    private function alias($uid,$aid)
+    {
+        $mkl = AppXzAlias::model()->find("user_id={$uid} and alias_id={$aid}");
+        if(empty($mkl))
+        {
+            $ml = new AppXzAlias();
+            $ml->user_id = $uid;
+            $ml->time = time();
+            $ml->alias_id = $aid;
+            $ml->status = 1;
+            $ml->save();
+        }
     }
 
     /**
@@ -1098,6 +1113,9 @@ class V0Controller extends Controller
                     $modl->time = time();
                     if($modl->save())
                     {
+                        $cnt = AppXzCollect::model()->count("user_id={$user_id}");
+                        if($cnt==3)
+                            $this->alias($user_id,3);
                         $this->msgsucc($msg);
                     }
                 }else
