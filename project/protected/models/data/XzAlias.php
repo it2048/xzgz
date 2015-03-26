@@ -7,6 +7,7 @@
  * @property integer $user_id
  * @property integer $alias_id
  * @property integer $time
+ * @property integer $status
  */
 class XzAlias extends CActiveRecord
 {
@@ -36,10 +37,10 @@ class XzAlias extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, alias_id, time', 'numerical', 'integerOnly'=>true),
+			array('user_id, alias_id, time, status', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, alias_id, time', 'safe', 'on'=>'search'),
+			array('user_id, alias_id, time, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,6 +64,7 @@ class XzAlias extends CActiveRecord
 			'user_id' => 'User',
 			'alias_id' => 'Alias',
 			'time' => 'Time',
+			'status' => 'Status',
 		);
 	}
 
@@ -80,6 +82,7 @@ class XzAlias extends CActiveRecord
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('alias_id',$this->alias_id);
 		$criteria->compare('time',$this->time);
+		$criteria->compare('status',$this->status);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

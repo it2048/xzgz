@@ -7,6 +7,7 @@
  * @property integer $user_id
  * @property integer $zone
  * @property integer $time
+ * @property integer $status
  */
 class XzFly extends CActiveRecord
 {
@@ -36,10 +37,10 @@ class XzFly extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, zone, time', 'numerical', 'integerOnly'=>true),
+			array('user_id, zone, time, status', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('user_id, zone, time', 'safe', 'on'=>'search'),
+			array('user_id, zone, time, status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,6 +64,7 @@ class XzFly extends CActiveRecord
 			'user_id' => 'User',
 			'zone' => 'Zone',
 			'time' => 'Time',
+			'status' => 'Status',
 		);
 	}
 
@@ -80,6 +82,7 @@ class XzFly extends CActiveRecord
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('zone',$this->zone);
 		$criteria->compare('time',$this->time);
+		$criteria->compare('status',$this->status);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

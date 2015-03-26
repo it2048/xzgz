@@ -3,6 +3,9 @@
 class V0Controller extends Controller
 {
     public $utrl = "http://120.24.234.19";
+
+    public $user_id = "";
+    public $token = "";
     /**
      * 生成首页
      *
@@ -16,6 +19,8 @@ class V0Controller extends Controller
         if($sign==md5($data.$salt))
         {
             $reques = json_decode($data,true);
+            $this->user_id = empty($reques['user_id'])?"":$reques['user_id'];
+            $this->token = empty($reques['token'])?"":$reques['token'];
             if(!call_user_func(array('V0Controller',$reques['action']),$reques))
             {
                 die();
@@ -26,6 +31,42 @@ class V0Controller extends Controller
             }
         }
         echo json_encode($msg);
+    }
+
+
+    private function setNotice()
+    {
+
+
+    }
+    private function getNotice(&$msg)
+    {
+        if(empty($this->user_id)||empty($this->token)||!$this->chkToken($this->user_id,$this->token))
+        {
+            $msg['data']['notice'] = array();
+        }else{
+            $arr = array();
+            $mld = AppXzFly::model()->find("status=1");
+            if(empty($mld))
+            {
+                $mpd = AppXzAlias::model()->find("status=1");
+                if(!empty($mpd))
+                {
+                    $mpd->status = 0;
+                    $mpd->save();
+                    $model = AppXzAchieve::model()->find("id={$mpd->alias_id}");
+                    $arr = array("name"=>"{$model->title}");
+                }
+            }else{
+
+                $model = AppXzScenic::model()->find("id={$mld->zone}");
+                $arr = array("name"=>"浏览过{$model->title}");
+                $mld->status = 0;
+                $mld->save();
+            }
+            $msg['data']['notice'] = $arr;
+        }
+
     }
     public function test($arr)
     {
@@ -85,6 +126,7 @@ class V0Controller extends Controller
 
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -119,6 +161,7 @@ class V0Controller extends Controller
             $msg['code'] = 4;
             $msg['msg'] = "无法定位，请开启GPS";
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
 
     }
@@ -187,6 +230,7 @@ class V0Controller extends Controller
         }
         $this->msgsucc($msg);
         $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -257,6 +301,7 @@ class V0Controller extends Controller
             $msg['code'] = 2;
             $msg['msg'] = "无法定位，请开启GPS";
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -295,6 +340,7 @@ class V0Controller extends Controller
         }
         $this->msgsucc($msg);
         $msg['data'] = $data;
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -336,6 +382,7 @@ class V0Controller extends Controller
         }
         $this->msgsucc($msg);
         $msg['data'] = $data;
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -386,6 +433,7 @@ class V0Controller extends Controller
                 $msg['msg'] = "商店不存在";
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
     
@@ -413,6 +461,7 @@ class V0Controller extends Controller
                 $msg['msg'] = "新闻不存在";
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
     
@@ -454,6 +503,7 @@ class V0Controller extends Controller
         }
         $this->msgsucc($msg);
         $msg['data'] = $data;
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -495,6 +545,7 @@ class V0Controller extends Controller
                 $msg['msg'] = "景点不存在";
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -580,6 +631,7 @@ class V0Controller extends Controller
         }
         else
             $msg['msg'] = "帐号或者密码错误";
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -606,6 +658,7 @@ class V0Controller extends Controller
                     $this->msgsucc($msg);
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -636,6 +689,7 @@ class V0Controller extends Controller
                 );
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -681,6 +735,7 @@ class V0Controller extends Controller
             }
             $msg['data'] = $allList;
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -741,6 +796,7 @@ class V0Controller extends Controller
                 $this->msgsucc($msg);
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -792,6 +848,7 @@ class V0Controller extends Controller
         {
             $msg['msg'] = "号码已被注册";
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -820,6 +877,7 @@ class V0Controller extends Controller
                 $msg['data'] = $id->type;
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -894,6 +952,7 @@ class V0Controller extends Controller
                 $id->save();
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -964,6 +1023,7 @@ class V0Controller extends Controller
                 }
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -994,6 +1054,7 @@ class V0Controller extends Controller
                 $msg['data'] = 1;
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1045,6 +1106,7 @@ class V0Controller extends Controller
                 }
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1097,6 +1159,7 @@ class V0Controller extends Controller
             }
             $msg['data'] = $data;
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
     
@@ -1141,7 +1204,8 @@ class V0Controller extends Controller
                 array_push($sec['user']['list'],array(
                     "scenic_id"=>$value['id'],
                     "name"=>$value['title'],
-                    "icon"=>$icon
+                    "icon"=>$icon,
+                    "desc"=>$value['desc']
                 ));
             }
             foreach (TmpList::$zone_list as $key => $value) {
@@ -1160,16 +1224,18 @@ class V0Controller extends Controller
                 array_push($sec[$value['zone']]['list'],array(
                     "scenic_id"=>$value['id'],
                     "name"=>$value['title'],
-                    "icon"=>$icon
+                    "icon"=>$icon,
+                    "desc"=>"浏览过{$value['title']}"
                 ));
             }
             foreach ($sec as $k=>$val)
             {
-                $sec[$k]['per'] = round(($val['play']/$val['total'])*100);
+                $sec[$k]['pre'] = round(($val['play']/$val['total'])*100);
             }
             $this->msgsucc($msg);
             $msg['data'] = array("collect"=>$cct,"play"=>count($fly),"list"=>$sec);
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1206,6 +1272,7 @@ class V0Controller extends Controller
             }
             $msg['data'] = array("list"=>$data,"total"=>$total,"see"=>$see,"pre"=>$pre);
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
     /**
@@ -1259,7 +1326,7 @@ class V0Controller extends Controller
                 $msg['msg'] = "用户已经存在";
             }
         }
-
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1294,6 +1361,7 @@ class V0Controller extends Controller
                 }
             }
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
     /**
@@ -1333,6 +1401,7 @@ class V0Controller extends Controller
             }
             $msg['data'] = $allList;
         }
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1388,6 +1457,7 @@ class V0Controller extends Controller
         $msg['code'] = 0;
         $msg['msg'] = "成功";
         $msg['data'] = $listArr;
+        $this->getNotice($msg);
         echo json_encode($msg);
     }
 
@@ -1416,7 +1486,7 @@ class V0Controller extends Controller
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
             "user_id"=>4,
-            "token"=>"7c0dbc3cabe501ad"
+            "token"=>"361af827aee9c040"
         );
 
 //        $params = array(
