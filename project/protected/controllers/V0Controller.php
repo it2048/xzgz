@@ -1190,7 +1190,7 @@ class V0Controller extends Controller
             }
 
             $sec = array();
-            $sec['user'] = array("name"=>"我的","total"=>0,"play"=>0,"per"=>0,"list"=>array());
+            $sec['user'] = array("name"=>"我的","total"=>0,"play"=>0,"pre"=>0,"list"=>array());
             foreach ($ck as $value){
                 $sec['user']['total']++;
                 if(in_array($value['id'], $charr))
@@ -1209,7 +1209,7 @@ class V0Controller extends Controller
                 ));
             }
             foreach (TmpList::$zone_list as $key => $value) {
-                $sec[$key] = array("name"=>str_replace("县","",$value),"total"=>0,"play"=>0,"per"=>0,"list"=>array());
+                $sec[$key] = array("name"=>str_replace("县","",$value),"total"=>0,"play"=>0,"pre"=>0,"list"=>array());
             }
             foreach ($lst as $value){
                 $sec[$value['zone']]['total']++;
