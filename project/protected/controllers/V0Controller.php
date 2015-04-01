@@ -1480,6 +1480,31 @@ class V0Controller extends Controller
     }
 
 
+    public function actionSms()
+    {
+        $msg = $this->msgcode();
+        $tel = Yii::app()->request->getParam("tel","18228041350");
+        $content = Yii::app()->request->getParam("content","测试短信");
+        if($tel==""||$content=="")
+        {
+            $msg['msg'] = "不能为空";
+        }else{
+            $con = new Sms();
+
+            $mll = $con->sendNotice($tel);
+
+            if($mll['code']==0)
+            {
+                $this->msgsucc($msg);
+            }
+            else{
+                $msg['msg'] = $mll['msg'];
+            }
+        }
+        echo json_encode($msg);
+
+    }
+
     public function actionDemo()
     {
 //       $params = array(
