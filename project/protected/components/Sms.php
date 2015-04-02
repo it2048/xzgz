@@ -105,7 +105,6 @@ class Sms {
     }
     private function curlSMS($url,$post_fields=array()){
         $tmp = $url."?".http_build_query($post_fields);
-        file_put_contents('d:/t.log',$tmp,8);
         if(file_get_contents($tmp)==0)
             return true;
         else
