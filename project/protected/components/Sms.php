@@ -78,11 +78,12 @@ class Sms {
     {
         $data = array
         (
-            'username'=>Yii::app()->params['sms']['username'],					//用户账号
-            'password'=>Yii::app()->params['sms']['password'],				//密码
-            'mobile'=>$mobile,					//号码
-            'content'=>iconv("UTF-8","GBK//IGNORE",$content),				//内容
-            'apikey'=>Yii::app()->params['sms']['apikey'],				    //apikey
+            'cpid'=>Yii::app()->params['sms']['username'],					//用户账号
+            'cppwd'=>Yii::app()->params['sms']['password'],				//密码
+            'phone'=>$mobile,					//号码
+            'spnumber'=>time(),
+            'msgcont'=>iconv("UTF-8","GBK//IGNORE",$content."【行走甘孜】"),				//内容
+            'extend'=>9527
         );
         $result= $this->curlSMS(Yii::app()->params['sms']['url'],$data);			//POST方式提交
         $model = new AppSmsSend();
@@ -90,9 +91,9 @@ class Sms {
         $model->tel = $mobile;
         $model->time = time();
         $model->type = $type;
-        if(strpos($result,"success")!==false)
+        if($result)
         {
-            $model->rtn = 0;
+            $model->rtn = 0; //成功
             $model->save();
             return true;
         }
@@ -103,20 +104,12 @@ class Sms {
         }
     }
     private function curlSMS($url,$post_fields=array()){
-//        $ch = curl_init();
-//        curl_setopt($ch, CURLOPT_URL,$url);
-//        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-//        curl_setopt($ch, CURLOPT_TIMEOUT, 3600); //60秒
-//        curl_setopt($ch, CURLOPT_HEADER,1);
-//        curl_setopt($ch, CURLOPT_REFERER,'http://rs.windplay.cn');
-//        curl_setopt($ch,CURLOPT_POST,1);
-//        curl_setopt($ch, CURLOPT_POSTFIELDS,$post_fields);
-//        $data = curl_exec($ch);
-//        curl_close($ch);
-//        $res = explode("\r\n\r\n",$data);
-//        file_put_contents('d:/t.log',print_r($res,true),8);
-//        return $res[2];
-        return "success:14279022595464";
+        $tmp = $url."?".http_build_query($post_fields);
+        file_put_contents('d:/t.log',$tmp,8);
+        if(file_get_contents($tmp)==0)
+            return true;
+        else
+            return false;
     }
 
 }
