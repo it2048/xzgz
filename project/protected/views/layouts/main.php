@@ -69,6 +69,7 @@
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homescenic/index'); ?>" target="navTab" rel="scenic">景区介绍</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeshop/index'); ?>" target="navTab" rel="shop">商店管理</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeachieve/index'); ?>" target="navTab" rel="homeachieve">成就管理</a></li>
+                                <li><a href="<?php echo Yii::app()->createAbsoluteUrl('adminblack/index'); ?>" target="navTab" rel="adminblack">短信黑名单</a></li>
                             </ul>
                         </li>
                     </ul>
