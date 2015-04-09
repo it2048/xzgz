@@ -28,6 +28,24 @@ class Sms {
 
     }
 
+    public static function check($tel)
+    {
+        $model = AppSmsNotice::model()->findByPk($tel);
+        if(!empty($model))
+        {
+            if(time()-$model->ltime<1800&&$model->num<3)
+            {
+                $model->num = $model->num+1;
+                $model->save();
+                return true;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private function insert($sb)
     {
         $msg = array("code"=>1,"msg"=>"");
@@ -45,6 +63,7 @@ class Sms {
                     $model->ftime = time();
                     $model->ctn = 1;
                     $model->ltime = time();
+                    $model->num = 0;
                     $model->save();
                 }
             }
@@ -54,6 +73,7 @@ class Sms {
                     $model->ftime = time();
                     $model->ctn = 1;
                     $model->ltime = time();
+                    $model->num = 0;
                     $model->save();
                 }else{
                     if($model->ltime>$tmj)
@@ -63,6 +83,7 @@ class Sms {
                     {
                         $model->ctn += 1;
                         $model->ltime = time();
+                        $model->num= 0;
                         $model->save();
                     }
                 }
@@ -74,6 +95,7 @@ class Sms {
             $mod->ftime = time();
             $mod->ctn = 1;
             $mod->ltime = time();
+            $model->num = 0;
             $mod->save();
         }
         if(empty($msg['msg']))

@@ -819,7 +819,17 @@ class V0Controller extends Controller
         $model = AppJxUser::model()->find("tel=:tl and type=1 and password='123456'",array("tl"=>$tel));
         if(!empty($model))
         {
-            if($model->check != $vcode)
+            if(empty($model->check))
+            {
+                $msg['msg'] = "验证码失效，请重新获取";
+            }
+            elseif(!Sms::check($tel))
+            {
+                $model->check = "";
+                $model->save();
+                $msg['msg'] = "验证时间超时，请重新获取";
+            }
+            elseif($model->check != $vcode)
             {
                 $model->check = "";
                 $model->save();
@@ -831,7 +841,6 @@ class V0Controller extends Controller
                 $model->fhtime = time();
                 $model->ctime = time();
                 $model->check = "";
-                //注册用户默认是被封号的
                 $model->type = 0;
                 if($model->save())
                 {
@@ -1386,7 +1395,17 @@ class V0Controller extends Controller
         $umode = AppJxUser::model()->find("tel=:tl",array(":tl"=>$tel));
         if(!empty($umode))
         {
-            if($umode->check != $vcode)
+            if(empty($umode->check))
+            {
+                $msg['msg'] = "验证码失效，请重新获取";
+            }
+            elseif(!Sms::check($tel))
+            {
+                $umode->check = "";
+                $umode->save();
+                $msg['msg'] = "验证时间超时或次数过多，请重新获取";
+            }
+            elseif($umode->check != $vcode)
             {
                 $umode->check = "";
                 $umode->save();
@@ -1545,10 +1564,10 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'sendverifycode',
+            'action' => 'updatepassword',
             'tel'=>'18228041350',
             'type'=>1,
-            "password"=>md5("123456"."xFl@&^852"),
+            "newpassword"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
             "scenic_id"=>2,
@@ -1575,8 +1594,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
