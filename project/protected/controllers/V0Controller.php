@@ -1302,6 +1302,7 @@ class V0Controller extends Controller
         $msg = $this->msgcode();
         $tel = $arr['tel'];
         $type = $arr['type']==1?1:0;
+        $sb = empty($arr['uuid'])?"":$arr['uuid'];
         $umode = AppJxUser::model()->find("tel=:tl",array(":tl"=>$tel));
         //改密码
         if($type==1)
@@ -1316,7 +1317,7 @@ class V0Controller extends Controller
                 if($umode->save())
                 {
                     $con = new Sms();
-                    $mll = $con->sendNotice($tel);
+                    $mll = $con->sendNotice($tel,$sb);
                     if($mll['code']==0)
                     {
                         $content = sprintf("验证码：%s ，您目前正在使用行走甘孜账密保护功能，请勿告知他人。",$code);
@@ -1349,7 +1350,7 @@ class V0Controller extends Controller
                 if($model->save())
                 {
                     $con = new Sms();
-                    $mll = $con->sendNotice($tel);
+                    $mll = $con->sendNotice($tel,$sb);
                     if($mll['code']==0)
                     {
                         $content = sprintf("验证码：%s ，您目前正在使用行走甘孜账密保护功能，请勿告知他人。",$code);
@@ -1574,8 +1575,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+echo RemoteCurl::getInstance()->post($url,$rtnList);die();
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
