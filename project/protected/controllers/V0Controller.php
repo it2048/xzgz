@@ -437,24 +437,20 @@ class V0Controller extends Controller
     }
 
 
-//<html>
-//<head>
-//<meta charset="utf-8"/>
-//<title>极客网址导航-能访问谷歌的网址导航</title>
-//<meta name="keywords" content="极客网址导航,谷歌网址导航,谷歌导航"/>
-//<meta name="description" content="极客网址导航是一个优化互联网访问,能直接访问谷歌,提供极客工具,极客新闻,软件工具的网站！"/>
-//<meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.3,user-scalable=no">
-//</head>
-//
-//<body>
-
     protected function zm($str)
     {
+        $strmp = '<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.3,user-scalable=no">
+</head>
+%s
+<body>';
         preg_match_all("/<img(.*)(src=\"[^\"]+\")[^>]+>/isU", $str, $arr);
         for($i=0,$j=count($arr[0]);$i<$j;$i++){
             $str = str_replace($arr[0][$i],"<img ".$arr[2][$i]." style='width:99%; height:auto; margin:4px;' />",$str);
         }
-        return $str;
+        return sprintf($strmp,$str);
     }
     
     /**
