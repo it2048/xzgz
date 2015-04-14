@@ -443,17 +443,21 @@ class V0Controller extends Controller
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.3,user-scalable=no">
+<style type="text/css">
+img {width:99%s; height:auto;}
+</style>
 </head>
 <body>
 %s
 </body>
 </html>
 ';
+        $str = preg_replace("/width[:0-9\s]+px;/is","", $str);
         preg_match_all("/<img(.*)(src=\"[^\"]+\")[^>]+>/isU", $str, $arr);
         for($i=0,$j=count($arr[0]);$i<$j;$i++){
-            $str = str_replace($arr[0][$i],"<img ".$arr[2][$i]." style='width:99%; height:auto; margin:4px;' />",$str);
+            $str = str_replace($arr[0][$i],"<img ".$arr[2][$i]." />",$str);
         }
-        return sprintf($strmp,$str);
+        return sprintf($strmp,"%",$str);
     }
     
     /**
