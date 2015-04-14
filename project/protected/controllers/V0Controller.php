@@ -444,8 +444,11 @@ class V0Controller extends Controller
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.3,user-scalable=no">
 </head>
+<body>
 %s
-<body>';
+</body>
+</html>
+';
         preg_match_all("/<img(.*)(src=\"[^\"]+\")[^>]+>/isU", $str, $arr);
         for($i=0,$j=count($arr[0]);$i<$j;$i++){
             $str = str_replace($arr[0][$i],"<img ".$arr[2][$i]." style='width:99%; height:auto; margin:4px;' />",$str);
