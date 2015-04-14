@@ -61,6 +61,10 @@
                     <option value="1" <?php echo $models->top==1?"selected":"";?>>推荐</option>
                 </select>
             </p>
+            <?php if($models->mp3!=""){?><p class="nowrap"><label>原录音地址：</label>
+                <input name="mp3tmp" type="text" class="textInput readonly" size="50" readonly="true" value="<?php echo Yii::app()->request->baseUrl.$models->mp3;?>">
+            </p>
+            <?php }?>
             <p class="nowrap">
                 <label>更换音频mp3：</label>
                 <input name="scien_mp3" type="file">

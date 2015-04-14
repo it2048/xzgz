@@ -435,6 +435,16 @@ class V0Controller extends Controller
         $this->getNotice($msg);
         echo json_encode($msg);
     }
+
+
+    protected function zm($str)
+    {
+        preg_match_all("/<img(.*)(src=\"[^\"]+\")[^>]+>/isU", $str, $arr);
+        for($i=0,$j=count($arr[0]);$i<$j;$i++){
+            $str = str_replace($arr[0][$i],"<img ".$arr[2][$i]." style='width:90%; height:auto;' />",$str);
+        }
+        return $str;
+    }
     
     /**
      * 获取新闻详情
@@ -454,7 +464,8 @@ class V0Controller extends Controller
             {
                 $this->msgsucc($msg);
                 $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
-                $msg['data'] = array("title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,"content"=>$allList->content);
+                $msg['data'] = array("title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
+                    "content"=>$this->zm($allList->content));
             }else
             {
                 $msg['msg'] = "新闻不存在";
@@ -1564,13 +1575,13 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'updatepassword',
+            'action' => 'newsdetails',
             'tel'=>'18228041350',
             'type'=>1,
             "newpassword"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
-            "scenic_id"=>2,
+            "news_id"=>6,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
             "user_id"=>4,
