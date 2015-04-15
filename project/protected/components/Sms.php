@@ -95,7 +95,6 @@ class Sms {
             $mod->ftime = time();
             $mod->ctn = 1;
             $mod->ltime = time();
-            $model->num = 0;
             $mod->save();
         }
         if(empty($msg['msg']))
