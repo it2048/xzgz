@@ -425,7 +425,7 @@ class V0Controller extends Controller
                     "suround"=>$allList->suround,
                     "service"=>$allList->service,
                     "office"=>$allList->office,
-                    "content"=>$allList->content
+                    "content"=>$this->zm($allList->content)
                 );
             }else
             {
@@ -558,7 +558,7 @@ class V0Controller extends Controller
                     "imgList"=>$mgArr,
                     "icon"=>$this->getUrl($allList->icon),
                     "address"=>$allList->add,
-                    "content"=>$allList->content,
+                    "content"=>$this->zm($allList->content),
                     "mp3"=>$this->getUrl($allList->mp3)
                 );
             }else
@@ -1586,9 +1586,10 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'newsdetails',
+            'action' => 'sendverifycode',
             'tel'=>'18228041350',
             'type'=>1,
+            'uuid'=>'CE0D893B-52EC-405E-84FF-3B0F50EC0DA6',
             "newpassword"=>md5("123456"."xFl@&^852"),
             "x"=>'101.88',
             'y' => "31.88",
@@ -1617,7 +1618,7 @@ class V0Controller extends Controller
             "sign"=>$sign
         );
         $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+echo RemoteCurl::getInstance()->post($url,$rtnList);die();
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
