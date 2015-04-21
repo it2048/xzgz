@@ -1364,10 +1364,14 @@ class V0Controller extends Controller
             }
         }else
         {
-            if(empty($umode))
+            if(empty($umode)||$umode->password=="123456")
             {
                 $msg['msg'] = "号码有误";
-                $model = new AppJxUser();
+
+                if(empty($umode))
+                    $model = new AppJxUser();
+                else
+                    $model = $umode;
                 $model->tel = $tel;
                 $model->password = "123456";
                 $model->fhtime = time();
