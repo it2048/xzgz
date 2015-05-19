@@ -2,7 +2,7 @@
   <div id="info_content">
     <div id="title_zone">
       <p id="title"><?php echo empty($model['title'])?"":$model['title']; ?></p>
-      <p id="time"><?php echo empty($model['source'])?"":$model['source']; ?>：<?php echo empty($model['addtime'])?"":$model['addtime']; ?></p>
+      <p id="time"><?php echo empty($model['source'])?"":$model['source']."："; ?><?php echo empty($model['addtime'])?"":$model['addtime']; ?></p>
     </div>
     <div id="msg_content">
       <p><?php echo empty($model['content'])?"":$model['content']; ?></p>

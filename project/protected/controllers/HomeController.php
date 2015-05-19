@@ -13,41 +13,15 @@ class HomeController extends Controller {
         if ($id == "") {
             echo "404 文章不存在啊！";
         } else {
-            $row = AppJxNews::model()->findByPk($id);
-            if (!empty($row)) {
-                $src = $row['source'];
-                if (strpos($row['source'], "《") !== false) {
-                    $src = ltrim($src, "《");
-                }
-                if (strpos($row['source'], "》") !== false) {
-                    $src = rtrim($src, "》");
-                }
-                $content = str_replace("<img ", "<img width='100%' ", $row['content']);
-                $img = $this->img_revert($row['img_url']);
-                if(!empty($img))
-                    $content = '<img src="'.$img.'" />'.$content;
-                $data = array("addtime" => date("Y-m-d H:i",$row['addtime']), "title" => $row['title']
-                    , "img_url" => $this->img_revert($row['img_url'])
-                    , "source" => $src
-                    ,"type"=>TmpList::$news_list[$row->type]
-                );
-                $data['content'] = $content;
-                if($row->type == 2)
-                {
-                    if(!empty($row['child_list']))
-                    {
-                        $rowLs = AppJxNews::model()->findAll("id in(".$row['child_list'].")");
-                        foreach ($rowLs as $val) {
-                            $img = $this->img_revert($row['img_url']);
-                            if(!empty($img))
-                                $val['content'] = '<img src="'.$img.'" />'.$val['content'];
-                            $data['content'] .= $val['content'];
-                        }
-                    }
-                }
+            $allList = AppXzTips::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $img = $this->img_revert($allList->img);
+                $data = array("title"=>$allList->title,"addtime"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img_url"=>$img
+                ,"type"=>TmpList::$news_list[$allList->type]
+                 ,"content"=>$allList->content);
                 $this->render('index',array("model"=>$data));
-            }
-            else
+            }else
             {
                 echo "404 文章不存在啊！";
             }
