@@ -30,7 +30,7 @@ class HomeController extends Controller {
 
     public function actionGit()
     {
-        $secret = '';
+        $secret = Yii::app()->params['gitsec'];
         //获取http 头
         $headers = getallheaders();
         //github发送过来的签名
