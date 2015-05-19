@@ -31,7 +31,7 @@ class HomeController extends Controller {
     public function actionGit()
     {
         $secret = '';
-        //获取http头
+        //获取http 头
         $headers = getallheaders();
         //github发送过来的签名
         $hubSignature = $headers['X-Hub-Signature'];
