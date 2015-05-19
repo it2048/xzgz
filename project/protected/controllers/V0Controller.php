@@ -476,7 +476,7 @@ class V0Controller extends Controller
             {
                 $this->msgsucc($msg);
                 $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
-                $msg['data'] = array("title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
+                $msg['data'] = array("id"=>$id,"title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
                     "content"=>$this->zm($allList->content));
             }else
             {
