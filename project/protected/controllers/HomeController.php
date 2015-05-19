@@ -36,7 +36,7 @@ class HomeController extends Controller {
     public function actionNews() {
         $id = Yii::app()->getRequest()->getParam("id", "");
         if ($id == "") {
-            echo "404 文章不存在！";
+            echo "404 文章不存在啊！";
         } else {
             $row = AppJxNews::model()->findByPk($id);
             if (!empty($row)) {
