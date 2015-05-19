@@ -30,7 +30,24 @@ class HomeController extends Controller {
 
     public function actionGit()
     {
-        echo exec("/alidata/git.sh xzgz");
+        $secret = '';
+        //获取http头
+        $headers = getallheaders();
+        //github发送过来的签名
+        $hubSignature = $headers['X-Hub-Signature'];
+
+        list($algo, $hash) = explode('=', $hubSignature, 2);
+
+        // 获取body
+        $payload = file_get_contents('php://input');
+
+        // Calculate hash based on payload and the secret
+        $payloadHash = hash_hmac($algo, $payload, $secret);
+
+        // Check if hashes are equivalent
+        if ($hash === $payloadHash) {
+            echo exec("/alidata/git.sh xzgz");
+        }
     }
 
     public function actionNews() {
