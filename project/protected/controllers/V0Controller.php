@@ -269,6 +269,7 @@ class V0Controller extends Controller
         $y = $arr['x'];
         $api = sprintf("http://api.map.baidu.com/geocoder/v2/?ak=0QDaLukGIKr22SwQKTWNxGSz&location=%s,%s&output=json&pois=0",$x,$y);
         $data = json_decode(RemoteCurl::getInstance()->get($api),true);
+        file_put_contents("d:/t.log",print_r($data,true),8);
         if($data['status']==0)
         {
             $block = $data['result']['formatted_address'];  //具体到每个街道
@@ -1590,13 +1591,9 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'sendverifycode',
-            'tel'=>'18228041350',
-            'type'=>1,
-            'uuid'=>'CE0D893B-52EC-405E-84FF-3B0F50EC0DA6',
-            "newpassword"=>md5("123456"."xFl@&^852"),
-            "x"=>'101.88',
-            'y' => "31.88",
+            'action' => 'rockarock',
+            "x"=>'30.609100',
+            'y' => "104.040688",
             "news_id"=>6,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
@@ -1622,7 +1619,7 @@ class V0Controller extends Controller
             "sign"=>$sign
         );
         $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
 
