@@ -30,7 +30,7 @@ class HomeController extends Controller {
 
     public function actionGit()
     {
-        echo exec("/alidata/www/default/api/xzgz/t.sh");
+        echo exec("/alidata/git.sh xzgz");
     }
 
     public function actionNews() {
