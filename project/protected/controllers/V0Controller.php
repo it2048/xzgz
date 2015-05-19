@@ -289,7 +289,7 @@ class V0Controller extends Controller
                 "scenic_id"=>$allList['id'],
                 "name"=>$allList['title'],
                 "img"=>$img,
-                "address"=>$allList['add'],
+                "address"=>TmpList::$zone_list[$allList['zone']].$allList['title'],
                 "desc"=>$allList['desc'],
                 "top"=>$allList['top'],
                 "block"=>$block,
