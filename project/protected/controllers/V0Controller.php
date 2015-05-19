@@ -269,7 +269,7 @@ class V0Controller extends Controller
         $y = $arr['x'];
         $api = sprintf("http://api.map.baidu.com/geocoder/v2/?ak=0QDaLukGIKr22SwQKTWNxGSz&location=%s,%s&output=json&pois=0",$x,$y);
         $data = json_decode(RemoteCurl::getInstance()->get($api),true);
-        file_put_contents("d:/t.log",print_r($data,true),8);
+
         if($data['status']==0)
         {
             $block = $data['result']['formatted_address'];  //具体到每个街道
