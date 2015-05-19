@@ -272,7 +272,7 @@ class V0Controller extends Controller
 
         if($data['status']==0)
         {
-            $block = $data['result']['formatted_address'];  //具体到每个街道
+            $block = $data['result']['addressComponent']['city'].$data['result']['addressComponent']['district'];  //只显示市区
             $model = AppXzScenic::model()->findAll("1=1 order by rand() limit 1");
 
             $allList = $model[0];
@@ -1592,8 +1592,8 @@ class V0Controller extends Controller
 
         $params = array(
             'action' => 'rockarock',
-            "x"=>'30.609100',
-            'y' => "104.040688",
+            "y"=>'30.609100',
+            'x' => "104.040688",
             "news_id"=>6,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
