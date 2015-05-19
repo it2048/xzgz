@@ -28,6 +28,11 @@ class HomeController extends Controller {
         }
     }
 
+    public function actionGit()
+    {
+        echo exec("/alidata/www/default/api/xzgz/t.sh");
+    }
+
     public function actionNews() {
         $id = Yii::app()->getRequest()->getParam("id", "");
         if ($id == "") {
