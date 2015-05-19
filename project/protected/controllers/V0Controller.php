@@ -477,7 +477,9 @@ class V0Controller extends Controller
                 $this->msgsucc($msg);
                 $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
                 $msg['data'] = array("id"=>$id,"title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
-                    "content"=>$this->zm($allList->content));
+                    "content"=>$this->zm($allList->content),
+                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id
+                );
             }else
             {
                 $msg['msg'] = "新闻不存在";
