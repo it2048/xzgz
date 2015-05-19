@@ -38,7 +38,7 @@ class HomeController extends Controller {
 
         list($algo, $hash) = explode('=', $hubSignature, 2);
 
-        // 获取body
+        // 获取body内容
         $payload = file_get_contents('php://input');
 
         // Calculate hash based on payload and the secret
