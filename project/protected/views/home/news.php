@@ -1,13 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <?php $home = Yii::app()->request->baseUrl."/public/home/";?>
+    <?php $home = Yii::app()->request->baseUrl."/public/home/news/";?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=320,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.3,user-scalable=no">
-    <title>每日新闻</title>
-    <link rel="stylesheet" href="http://120.24.234.19<?php echo $home; ?>css/cssreset.css">
-    <script src="http://120.24.234.19<?php echo $home; ?>js/jquery.min.js"></script>
-    <script src="http://120.24.234.19<?php echo $home; ?>js/jquery.mobile.min.js"></script>
+    <title>景点介绍</title>
+    <link rel="stylesheet" href="<?php echo Yii::app()->params->url.$home; ?>css/cssreset.css">
+    <script src="<?php echo Yii::app()->params->url.$home; ?>js/jquery.min.js"></script>
     <style type="text/css">
         .ui-content {
             border-width: 0;
@@ -28,14 +27,14 @@
             background:#fff;
         }
         #header {
-            background: #000000 repeat-x;
-            height: 43px;
-            line-height: 43px;
+            background: #F86C41 repeat-x;
+            height: 45px;
+            line-height: 45px;
             text-align: center;
         }
         #header b{
             color: #ffffff;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: normal;
             text-shadow: none;
         }
@@ -45,14 +44,14 @@
         #title {
             text-align: left;
             font-size: 20px;
-            color: #3e3a39;
+            color: #3E3A39;
             padding: 0 0 4px 0;
         }
         #time {
             text-align: left;
             font-size: 11px;
             color: #b4b4b5;
-            padding: 0 10px 4px 0;
+            padding: 10px 10px 4px 0;
         }
         #msg_content {
             padding: 10px 0;
@@ -94,10 +93,11 @@
 </head>
 <body>
 <div bgcolor="#ffffff">
+    <div id="header"><b>景点介绍<b></div>
     <div id="info_content">
         <div id="title_zone">
             <p id="title"><?php echo empty($model['title'])?"":$model['title']; ?></p>
-            <p id="time"><?php echo empty($model['source'])?"":$model['source']; ?>：<?php echo empty($model['addtime'])?"":$model['addtime']; ?></p>
+            <p id="time"><?php echo empty($model['addtime'])?"":$model['addtime']; ?></p>
         </div>
         <div id="msg_content">
             <p><?php echo empty($model['content'])?"":$model['content']; ?></p>
