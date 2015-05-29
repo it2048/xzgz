@@ -426,7 +426,8 @@ class V0Controller extends Controller
                     "suround"=>$allList->suround,
                     "service"=>$allList->service,
                     "office"=>$allList->office,
-                    "content"=>$this->zm($allList->content)
+                    "content"=>$this->zm($allList->content),
+                    "url"=>$this->utrl.'/api/xzgz/server/project/index.php/home/sq/id/'.$allList->id
                 );
             }else
             {
@@ -562,7 +563,8 @@ class V0Controller extends Controller
                     "icon"=>$this->getUrl($allList->icon),
                     "address"=>$allList->add,
                     "content"=>$this->zm($allList->content),
-                    "mp3"=>$this->getUrl($allList->mp3)
+                    "mp3"=>$this->getUrl($allList->mp3),
+                    "url"=>$this->utrl.'/api/xzgz/server/project/index.php/home/scenic/id/'.$allList->id
                 );
             }else
             {

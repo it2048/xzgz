@@ -103,4 +103,46 @@ class HomeController extends Controller {
             return "http://120.24.234.19".Yii::app()->request->baseUrl.$str;
         }
     }
+
+    /**
+     * 景区
+     *
+     */
+    public function actionJq() {
+        $id = Yii::app()->getRequest()->getParam("id", "");
+        if ($id == "") {
+            echo "404 景区不存在啊！";
+        } else {
+            $row = AppXzScenic::model()->findByPk($id);
+            if (!empty($row)) {
+                $content = $row['content'];
+                $this->render('jq',array("model"=>$content));
+            }
+            else
+            {
+                echo "404 景点不存在啊！";
+            }
+        }
+    }
+
+    /**
+     * 商圈
+     *
+     */
+    public function actionSq() {
+        $id = Yii::app()->getRequest()->getParam("id", "");
+        if ($id == "") {
+            echo "404 商店不存在啊！";
+        } else {
+            $row = AppXzShop::model()->findByPk($id);
+            if (!empty($row)) {
+                $content = $row['content'];
+                $this->render('jq',array("model"=>$content));
+            }
+            else
+            {
+                echo "404 商店不存在啊！";
+            }
+        }
+    }
 }
