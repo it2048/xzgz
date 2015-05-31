@@ -6,7 +6,7 @@ class HomeController extends Controller {
 
     /**
      * 生成首页
-     * 
+     *
      */
     public function actionIndex() {
         $id = Yii::app()->getRequest()->getParam("id", "");
@@ -20,6 +20,30 @@ class HomeController extends Controller {
                 $data = array("title"=>$allList->title,"addtime"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img_url"=>$img
                 ,"type"=>TmpList::$news_list[$allList->type]
                  ,"content"=>$allList->content);
+                $this->renderPartial('index',array("model"=>$data));
+            }else
+            {
+                echo "404 文章不存在啊！";
+            }
+        }
+    }
+
+    /**
+     * 生成首页
+     *
+     */
+    public function actionHome() {
+        $id = Yii::app()->getRequest()->getParam("id", "");
+        if ($id == "") {
+            echo "404 文章不存在啊！";
+        } else {
+            $allList = AppXzTips::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $img = $this->img_revert($allList->img);
+                $data = array("title"=>$allList->title,"addtime"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img_url"=>$img
+                ,"type"=>TmpList::$news_list[$allList->type]
+                ,"content"=>$allList->content);
                 $this->renderPartial('index',array("model"=>$data));
             }else
             {
