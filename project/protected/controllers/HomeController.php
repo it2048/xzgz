@@ -19,8 +19,8 @@ class HomeController extends Controller {
                 $img = $this->img_revert($allList->img);
                 $data = array("title"=>$allList->title,"addtime"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img_url"=>$img
                 ,"type"=>TmpList::$news_list[$allList->type]
-                 ,"content"=>$allList->content);
-                $this->renderPartial('index',array("model"=>$data));
+                ,"content"=>$this->revc($allList->content));
+                $this->renderPartial('home',array("model"=>$data));
             }else
             {
                 echo "404 文章不存在啊！";
@@ -43,7 +43,7 @@ class HomeController extends Controller {
                 $img = $this->img_revert($allList->img);
                 $data = array("title"=>$allList->title,"addtime"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img_url"=>$img
                 ,"type"=>TmpList::$news_list[$allList->type]
-                ,"content"=>$allList->content);
+                ,"content"=>$this->revc($allList->content));
                 $this->renderPartial('home',array("model"=>$data));
             }else
             {
@@ -95,7 +95,7 @@ class HomeController extends Controller {
                     $time = date('Y-m-d H:i:s',$row['atime']);
 
                 $data = array("addtime" => $time, "title" => $row['title']);
-                $data['content'] = str_replace("<img ", "<img width='100%' ",$content);
+                $data['content'] = $this->revc($content);
                 $this->renderPartial('news',array("model"=>$data));
             }
             else
@@ -103,6 +103,13 @@ class HomeController extends Controller {
                 echo "404 景点不存在啊！";
             }
         }
+    }
+
+    private function revc($ptr)
+    {
+        $str = preg_replace('/width=\"[0-9]*\"/is',"", $ptr);
+        $str = preg_replace("/width[:0-9\s]+px;/is","", $str);
+        return $str;
     }
 
     /**
@@ -140,7 +147,7 @@ class HomeController extends Controller {
             $row = AppXzScenic::model()->findByPk($id);
             if (!empty($row)) {
                 $content = $row['content'];
-                $this->render('jq',array("model"=>$content));
+                $this->render('jq',array("model"=>$this->revc($content)));
             }
             else
             {
@@ -161,7 +168,7 @@ class HomeController extends Controller {
             $row = AppXzShop::model()->findByPk($id);
             if (!empty($row)) {
                 $content = $row['content'];
-                $this->render('jq',array("model"=>$content));
+                $this->render('jq',array("model"=>$this->revc($content)));
             }
             else
             {
