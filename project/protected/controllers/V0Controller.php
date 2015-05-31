@@ -479,6 +479,7 @@ class V0Controller extends Controller
                 $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
                 $msg['data'] = array("id"=>$id,"title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
                     "content"=>$this->zm($allList->content),
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id,
                     "url"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id
                 );
             }else
@@ -564,7 +565,8 @@ class V0Controller extends Controller
                     "address"=>$allList->add,
                     "content"=>$this->zm($allList->content),
                     "mp3"=>$this->getUrl($allList->mp3),
-                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/scenic/id/'.$allList->id
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/scenic/id/'.$allList->id,
+                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/jq/id/'.$allList->id
                 );
             }else
             {
@@ -1279,7 +1281,8 @@ class V0Controller extends Controller
                     "scenic_id"=>$value['id'],
                     "name"=>$value['title'],
                     "icon"=>$icon,
-                    "desc"=>"浏览过{$value['title']}"
+                    "desc"=>"浏览过{$value['title']}",
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9',
                 ));
             }
             foreach ($sec as $k=>$val)
