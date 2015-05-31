@@ -480,7 +480,7 @@ class V0Controller extends Controller
                 $msg['data'] = array("id"=>$id,"title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
                     "content"=>$this->zm($allList->content),
                     "share"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id,
-                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id
+                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/home/id/'.$id
                 );
             }else
             {
