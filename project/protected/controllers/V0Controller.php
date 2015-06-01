@@ -1325,7 +1325,8 @@ class V0Controller extends Controller
                 array_push($data,array(
                     "scenic_id"=>$value['id'], //新闻编号
                     "name"=>$value['title'],
-                    "icon"=>$icon
+                    "icon"=>$icon,
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9'
                 ));
             }
             $msg['data'] = array("list"=>$data,"total"=>$total,"see"=>$see,"pre"=>$pre);
