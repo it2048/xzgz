@@ -1261,7 +1261,8 @@ class V0Controller extends Controller
                     "scenic_id"=>$value['id'],
                     "name"=>$value['title'],
                     "icon"=>$icon,
-                    "desc"=>$value['desc']
+                    "desc"=>$value['desc'],
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9',
                 ));
             }
             foreach (TmpList::$zone_list as $key => $value) {
@@ -1598,14 +1599,14 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'rockarock',
+            'action' => 'usercenter',
             "y"=>'30.609100',
             'x' => "104.040688",
             "news_id"=>6,
             "password"=>md5("123456"."xFl@&^852"),
             "verifycode"=>9999,
-            "user_id"=>4,
-            "token"=>"361af827aee9c040"
+            "user_id"=>122,
+            "token"=>"5727e55d99e9d211"
         );
 
 //        $params = array(
