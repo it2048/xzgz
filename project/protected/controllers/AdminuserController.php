@@ -11,7 +11,9 @@ class AdminuserController extends AdminSet
         $pages['pageNum'] = Yii::app()->getRequest()->getParam("pageNum", 1); //当前页
         $pages['countPage'] = Yii::app()->getRequest()->getParam("countPage", 0); //总共多少记录
         $pages['numPerPage'] = Yii::app()->getRequest()->getParam("numPerPage", 50); //每页多少条数据
+        $pages['user_tel'] = Yii::app()->getRequest()->getParam("user_tel", ""); //用户电话
         $criteria = new CDbCriteria;
+        !empty($pages['user_tel'])&&$criteria->addSearchCondition('tel',$pages['user_tel']);
         $pages['countPage'] = AppJxUser::model()->count($criteria);
         $criteria->limit = $pages['numPerPage'];
         $criteria->offset = $pages['numPerPage'] * ($pages['pageNum'] - 1);

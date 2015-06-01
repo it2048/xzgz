@@ -1,9 +1,22 @@
-<form id="pagerForm" onsubmit="return navTabSearch(this);" action="<?php echo Yii::app()->createAbsoluteUrl('adminuser/usermanager'); ?>" method="post">
-    <input type="hidden" name="pageNum" value="<?php echo $pages['pageNum'];?>" /><!--【必须】value=1可以写死-->
-    <input type="hidden" name="numPerPage" value="50" /><!--【可选】每页显示多少条-->
-</form>
+<div class="pageHeader">
+    <form id="pagerForm" onsubmit="return navTabSearch(this);" action="<?php echo Yii::app()->createAbsoluteUrl('adminuser/usermanager'); ?>" method="post">
+        <input type="hidden" name="pageNum" value="<?php echo $pages['pageNum'];?>" /><!--【必须】value=1可以写死-->
+        <input type="hidden" name="numPerPage" value="50" /><!--【可选】每页显示多少条-->
+        <div class="searchBar">
+            <table class="searchContent">
+                <tbody><tr>
+                    <td>
+                        用户手机：<input type="text" name="user_tel" class="textInput" value="<?php echo $pages['user_tel'];?>">
+                    </td>
+                    <td><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></td>
+                </tr>
+                </tbody></table>
+        </div>
+    </form>
+</div>
+
 <div class="pageContent">
-    <table class="table" width="1040" layoutH="46">
+    <table class="table" width="1040" layoutH="86">
         <thead>
         <tr>
             <th width="20">编号</th>
@@ -45,7 +58,7 @@
         <div class="pages">
             <span>共<?php echo $pages['countPage'];?>条</span>
         </div>
-        <div class="pagination" targetType="navTab" totalCount="<?php echo $pages['countPage'];?>" numPerPage="30" pageNumShown="10" currentPage="<?php echo $pages['pageNum'];?>"></div>
+        <div class="pagination" targetType="navTab" totalCount="<?php echo $pages['countPage'];?>" numPerPage="50" pageNumShown="10" currentPage="<?php echo $pages['pageNum'];?>"></div>
     </div>
 </div>
 <script type="text/javascript">
