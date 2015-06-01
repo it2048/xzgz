@@ -1262,7 +1262,7 @@ class V0Controller extends Controller
                     "name"=>$value['title'],
                     "icon"=>$icon,
                     "desc"=>$value['desc'],
-                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9',
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/type/1/id/'.$value['id'],
                 ));
             }
             foreach (TmpList::$zone_list as $key => $value) {
@@ -1283,7 +1283,7 @@ class V0Controller extends Controller
                     "name"=>$value['title'],
                     "icon"=>$icon,
                     "desc"=>"浏览过{$value['title']}",
-                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9',
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/'.$value['id'],
                 ));
             }
             foreach ($sec as $k=>$val)
@@ -1326,7 +1326,7 @@ class V0Controller extends Controller
                     "scenic_id"=>$value['id'], //新闻编号
                     "name"=>$value['title'],
                     "icon"=>$icon,
-                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/9'
+                    "share"=>$this->utrl.'/api/xzgz/project/index.php/home/achieve/id/'.$value['id']
                 ));
             }
             $msg['data'] = array("list"=>$data,"total"=>$total,"see"=>$see,"pre"=>$pre);
@@ -1627,7 +1627,7 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
 
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }

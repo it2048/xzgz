@@ -118,10 +118,24 @@ class HomeController extends Controller {
      */
     public function actionAchieve() {
         $id = Yii::app()->getRequest()->getParam("id", "");
+        $type = Yii::app()->getRequest()->getParam("type", "2");
         if ($id == "") {
             echo "404 成就不存在啊！";
         } else {
-            $this->renderPartial('achieve');
+            if($type==1)
+            {
+                $list = AppXzAchieve::model()->findByPk($id);
+                if(empty($list))
+                    $list = AppXzScenic::model()->findByPk($id);
+                $img = $this->img_revert($list->icon);
+            }else
+            {
+                $list = AppXzScenic::model()->findByPk($id);
+                if(empty($list))
+                    $list = AppXzAchieve::model()->findByPk($id);
+                $img = $this->img_revert($list->icon);
+            }
+            $this->renderPartial('achieve',array("list"=>$img));
         }
     }
 
@@ -131,7 +145,7 @@ class HomeController extends Controller {
         {
             return "";
         }else{
-            return "http://120.24.234.19".Yii::app()->request->baseUrl.$str;
+            return Yii::app()->params->url.Yii::app()->request->baseUrl.$str;
         }
     }
 

@@ -62,7 +62,7 @@
     <p><img src="<?php echo Yii::app()->params->url.$home; ?>image/1.png" /></p>
     <p><img src="<?php echo Yii::app()->params->url.$home; ?>image/2.png" /></p>
     <p><img src="<?php echo Yii::app()->params->url.$home; ?>image/3.png" /></p>
-    <div id="float_layer"><img src="<?php echo Yii::app()->params->url.$home; ?>image/ic_cj_nor.png" /></div>
+    <div id="float_layer"><img src="<?php echo $list; ?>" /></div>
 </div>
 
 </body>
