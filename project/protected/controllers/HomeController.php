@@ -109,6 +109,8 @@ class HomeController extends Controller {
     {
         $str = preg_replace('/width=\"[0-9]*\"/is',"", $ptr);
         $str = preg_replace("/width[:0-9\s]+px;/is","", $str);
+        $str = preg_replace("/text-indent[:0-9\s]+em;/is","", $str);
+
         return $str;
     }
 
