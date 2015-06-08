@@ -46,16 +46,28 @@ class V0Controller extends Controller
             $msg['notice'] = array("name"=>"");
         }else{
             $arr = array("name"=>"");
-            $mld = AppXzFly::model()->find("status=1");
+            $mld = AppXzFly::model()->find("status=1 and user_id=".$this->user_id);
             if(empty($mld))
             {
-                $mpd = AppXzAlias::model()->find("status=1");
+                $mpd = AppXzAlias::model()->findAll("status=1 and user_id=".$this->user_id);
                 if(!empty($mpd))
                 {
-                    $mpd->status = 0;
-                    $mpd->save();
-                    $model = AppXzAchieve::model()->find("id={$mpd->alias_id}");
-                    $arr = array("name"=>"恭喜！【{$model->title}】已达成！");
+                    AppXzAlias::model()->updateAll(array('status'=>'0'),'status=:lid and user_id=:uid',
+                        array(':lid'=>'1',':uid'=>$this->user_id));
+                    if(count($mpd)==1)
+                    {
+                        $model = AppXzAchieve::model()->find("id={$mpd[0]->alias_id}");
+                        $arr = array("name"=>"恭喜！【{$model->title}】已达成！");
+                    }else
+                    {
+                        $str = "";
+                        foreach($mpd as $val)
+                        {
+                            $model = AppXzAchieve::model()->find("id={$val->alias_id}");
+                            $str .= "【{$model->title}】";
+                        }
+                        $arr = array("name"=>"恭喜！{$str} 已达成！");
+                    }
                 }
             }else{
                 $model = AppXzScenic::model()->find("id={$mld->zone}");
@@ -876,6 +888,7 @@ class V0Controller extends Controller
                     $this->msgsucc($msg);
                     $id = $model->attributes['id'];
                     $this->alias($id,1);
+                    $this->alias($id,2);
                     $msg['data'] = array("id"=>$id,
                         "token"=>$this->getToken($model));
                 }else
@@ -1600,14 +1613,14 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'usercenter',
+            'action' => 'getzone',
             "y"=>'30.609100',
             'x' => "104.040688",
-            "news_id"=>6,
-            "password"=>md5("123456"."xFl@&^852"),
-            "verifycode"=>9999,
-            "user_id"=>122,
-            "token"=>"5727e55d99e9d211"
+            "tel"=>"18228041350",
+            "password"=>md5("123456"),
+            "verifycode"=>2116,
+            "user_id"=>144,
+            "token"=>"e8bf54cbe72247ed"
         );
 
 //        $params = array(
@@ -1627,7 +1640,8 @@ class V0Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
 
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
