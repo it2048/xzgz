@@ -231,7 +231,7 @@ class V0Controller extends Controller
                     $crent = str_replace("℃","",$crent);
                 }else
                 {
-                    $crent = substr($model[0]['date'],$start+3,-4);
+                    $crent = substr($model[0]['date'],$start+3,-1);
                 }
                 $day = "星期".mb_substr($model[0]['date'],3,3);
                 $allList = array("temperature"=>$crent,"date"=>date("Y.m.d",time()),
@@ -1527,7 +1527,7 @@ class V0Controller extends Controller
                 $this->msgsucc($msg);
                 $model = $data['results'][0]['weather_data'];
                 $start = strpos($model[0]['date'],"：");
-                $crent = substr($model[0]['date'],$start+3,-4);
+                $crent = substr($model[0]['date'],$start+3,-1);
 
                 foreach($model as $k=>$val)
                 {
