@@ -6,7 +6,7 @@
  * Time: 下午6:26
  */
 
-class AppJxComment extends JxComment {
+class AppXzConfig extends XzConfig {
 
     /**
      * 实例化模型

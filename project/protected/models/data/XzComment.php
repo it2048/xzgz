@@ -1,28 +1,24 @@
 <?php
 
 /**
- * This is the model class for table "xz_tips".
+ * This is the model class for table "xz_comment".
  *
- * The followings are the available columns in table 'xz_tips':
+ * The followings are the available columns in table 'xz_comment':
  * @property integer $id
- * @property string $title
- * @property string $tag
- * @property integer $stime
- * @property integer $endtime
- * @property string $img
- * @property string $zone_list
+ * @property integer $news_id
+ * @property integer $parent_id
+ * @property integer $user_id
+ * @property string $comment
+ * @property string $parent_user
+ * @property integer $addtime
  * @property integer $type
- * @property string $content
- * @property string $user
- * @property string $source
- * @property integer $comtype
  */
-class XzTips extends CActiveRecord
+class XzComment extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return XzTips the static model class
+	 * @return XzComment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -34,7 +30,7 @@ class XzTips extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'xz_tips';
+		return 'xz_comment';
 	}
 
 	/**
@@ -45,14 +41,13 @@ class XzTips extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, stime, endtime, zone_list, content, user', 'required'),
-			array('stime, endtime, type, comtype', 'numerical', 'integerOnly'=>true),
-			array('title, img', 'length', 'max'=>128),
-			array('tag, user, source', 'length', 'max'=>64),
-			array('zone_list', 'length', 'max'=>256),
+			array('news_id, user_id, comment, addtime, type', 'required'),
+			array('news_id, parent_id, user_id, addtime, type', 'numerical', 'integerOnly'=>true),
+			array('comment', 'length', 'max'=>2048),
+			array('parent_user', 'length', 'max'=>64),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, title, tag, stime, endtime, img, zone_list, type, content, user, source, comtype', 'safe', 'on'=>'search'),
+			array('id, news_id, parent_id, user_id, comment, parent_user, addtime, type', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,17 +69,13 @@ class XzTips extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'title' => 'Title',
-			'tag' => 'Tag',
-			'stime' => 'Stime',
-			'endtime' => 'Endtime',
-			'img' => 'Img',
-			'zone_list' => 'Zone List',
+			'news_id' => 'News',
+			'parent_id' => 'Parent',
+			'user_id' => 'User',
+			'comment' => 'Comment',
+			'parent_user' => 'Parent User',
+			'addtime' => 'Addtime',
 			'type' => 'Type',
-			'content' => 'Content',
-			'user' => 'User',
-			'source' => 'Source',
-			'comtype' => 'Comtype',
 		);
 	}
 
@@ -100,17 +91,13 @@ class XzTips extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('title',$this->title,true);
-		$criteria->compare('tag',$this->tag,true);
-		$criteria->compare('stime',$this->stime);
-		$criteria->compare('endtime',$this->endtime);
-		$criteria->compare('img',$this->img,true);
-		$criteria->compare('zone_list',$this->zone_list,true);
+		$criteria->compare('news_id',$this->news_id);
+		$criteria->compare('parent_id',$this->parent_id);
+		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('comment',$this->comment,true);
+		$criteria->compare('parent_user',$this->parent_user,true);
+		$criteria->compare('addtime',$this->addtime);
 		$criteria->compare('type',$this->type);
-		$criteria->compare('content',$this->content,true);
-		$criteria->compare('user',$this->user,true);
-		$criteria->compare('source',$this->source,true);
-		$criteria->compare('comtype',$this->comtype);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -240,7 +240,7 @@ class V0Controller extends Controller
             }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>empty($allList)?"":$allList);
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -738,13 +738,38 @@ class V0Controller extends Controller
     {
         $msg = $this->msgcode();
         $news_id = $arr['news_id'];
-        $newModel = AppJxNews::model()->findByPk($news_id);
+        $news_type = $arr['news_type'];
+
+        switch ($news_type)
+        {
+            case 1://新闻
+                $newModel = AppXzTips::model()->findByPk($news_id);
+                break;
+            case 2: //景区
+                $newModel = AppXzScenic::model()->findByPk($news_id);
+                break;
+            default:
+                $newmodel = '';
+                break;
+        }
+
         if(empty($newModel)||$newModel->comtype==1)
         {
             $msg['code'] = 3;
             $msg['msg'] = "禁止评论";
         }else{
-            $userList = AppJxUser::model()->findAll();
+
+            $page = $arr['page'];
+            if($page<1)$page=1;
+            $star = 20*($page-1);
+            $comm = AppXzComment::model()->findAll("news_id={$news_id} order by id desc limit {$star},20");
+            $str_id = '';
+            foreach($comm as $val)
+            {
+                $str_id .=$val->user_id.',';
+            }
+            $str_id = rtrim($str_id,',');
+            $userList = AppJxUser::model()->findAll("id in($str_id)");
             $userApp = array();
             $userNc = array();
             $userImg = array();
@@ -754,24 +779,21 @@ class V0Controller extends Controller
                 $userNc[$val->id] = $val->uname;
                 $userImg[$val->id] = $val->img_url;
             }
-            $page = $arr['page'];
-            if($page<1)$page=1;
-            $star = 20*($page-1);
-            $comm = AppJxComment::model()->findAll("news_id={$news_id} order by id desc limit {$star},20");
+
             $this->msgsucc($msg);
             $allList = array();
             foreach($comm as $val)
             {
                 array_push($allList,array(
                     "id"=>$val->id,
-                    "parent_id"=>$val->parent_id,
+                    "parent_id"=>$val->parent_id==null?"":$val->parent_id,
                     "parent_user"=>$val->parent_user,
                     "user_id"=>$val->user_id,
                     "comment"=>$val->comment,
                     "user_account"=>$userApp[$val->user_id],
-                    "user_nic"=>$userNc[$val->user_id],
+                    "user_nic"=>$userNc[$val->user_id]==null?"":$userNc[$val->user_id],
                     "addtime"=>$val->addtime,
-                    "user_img"=>$this->utrl.Yii::app()->request->baseUrl.$userImg[$val->user_id]
+                    "user_img"=>$this->getUrl($userImg[$val->user_id])
                 ));
             }
             $msg['data'] = $allList;
@@ -790,11 +812,12 @@ class V0Controller extends Controller
         $user_id = $arr['user_id'];
         $token = $arr['token'];
         $news_id = $arr['news_id'];
+        $news_type = $arr['news_type'];
         $content = $arr['content'];
         $parent_id = $arr['parent_id'];
         $parent_user = $arr['parent_user'];
 
-        $black = AppJxConfig::model()->findByPk("comment");
+        $black = AppXzConfig::model()->findByPk("comment");
         $lackList= explode(",",$black->value);
         $bl = true;
         foreach($lackList as $as)
@@ -805,7 +828,19 @@ class V0Controller extends Controller
                 break;
             }
         }
-        $newmodel = AppJxNews::model()->find("id={$news_id} and (comtype is null or comtype=0)");
+        switch ($news_type)
+        {
+            case 1://新闻
+                $newmodel = AppXzTips::model()->find("id={$news_id} and comtype=0");
+                break;
+            case 2: //景区
+                $newmodel = AppXzScenic::model()->find("id={$news_id} and comtype=0");
+                break;
+            default:
+                $newmodel = '';
+                break;
+        }
+
         if(!$bl)
         {
             $msg['msg'] = "评论中包含非法词汇";
@@ -814,7 +849,7 @@ class V0Controller extends Controller
         {
             $msg['msg'] = "该文章静止评论";
         }
-        elseif($user_id==""||$token==""||$news_id==""||$content=="")
+        elseif($user_id==""||$token==""||$news_id==""||$content==""||$news_type=="")
         {
             $msg['msg'] = "存在必填项为空，请确定参数满足条件";
         }elseif(!$this->chkToken($user_id,$token))
@@ -822,18 +857,16 @@ class V0Controller extends Controller
             $msg['code'] = 2;
             $msg['msg'] = "无权限，请登录";
         }else{
-            $comm = new AppJxComment();
+            $comm = new AppXzComment();
             $comm->news_id = $news_id;
             $comm->parent_id = $parent_id;
             $comm->parent_user = $parent_user;
             $comm->user_id = $user_id;
             $comm->comment = $content;
+            $comm->type = $news_type;
             $comm->addtime = time();
             if($comm->save())
             {
-                $mdl = AppJxNews::model()->findByPk($news_id);
-                $mdl->comment = $mdl->comment+1;
-                $mdl->save();
                 $this->msgsucc($msg);
             }
         }
@@ -1511,6 +1544,9 @@ class V0Controller extends Controller
                 $msg['msg'] = "天气获取失败";
             }
             $msg['data'] = $allList;
+        }else
+        {
+            $msg['msg'] = "天气获取失败";
         }
         $this->getNotice($msg);
         echo json_encode($msg);
@@ -1601,35 +1637,37 @@ class V0Controller extends Controller
 
     public function actionDemo()
     {
+
 //       $params = array(
-//            'action' => 'commentlist',
-//            'user_id' => '23',
-//            'token'=>'7cb5f1867099ffab',
-//            'news_id'=>'973',
-//            'page' => '1',
-//            'parent_id'=>'23',
-//            'parent_user'=>"测试",
+//            'action' => 'comment',
+//            'user_id' => '143',
+//            'token'=>'6be4fc980b0dd9e0',
+//            'news_id'=>'34',
+//            'news_type' => '1',
+//            'content'=>'hah',
+//            'parent_id'=>'',
+//            'parent_user'=>"",
 //
 //        );
 
-        $params = array(
-            'action' => 'getzone',
-            "y"=>'30.609100',
-            'x' => "104.040688",
-            "tel"=>"18228041350",
-            "password"=>md5("123456"),
-            "verifycode"=>2116,
-            "user_id"=>144,
-            "token"=>"e8bf54cbe72247ed"
-        );
 
 //        $params = array(
-//            'action' => 'comment',
-//            'user_id' => '23',
-//            'news_id' => '286',
-//            'content'=>1,
-//            'token'=>'c88d5135ac6b59c4 '
+//            'action' => 'getzone',
+//            "y"=>'30.609100',
+//            'x' => "104.040688",
+//            "tel"=>"18228041350",
+//            "password"=>md5("123456"),
+//            "verifycode"=>2116,
+//            "user_id"=>144,
+//            "token"=>"e8bf54cbe72247ed"
 //        );
+
+        $params = array(
+            'action' => 'homenews',
+            'zonecode' => 'xy4',
+            'news_id' => '34',
+            'page'=>1
+        );
      //   xFl@&^852
 
         //[id] => 1 [token] => c88d5135ac6b59c4
@@ -1641,7 +1679,7 @@ class V0Controller extends Controller
             "sign"=>$sign
         );
         $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+echo RemoteCurl::getInstance()->post($url,$rtnList);die();
 
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }

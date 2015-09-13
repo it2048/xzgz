@@ -22,6 +22,7 @@
  * @property string $lng
  * @property string $around
  * @property string $hicon
+ * @property integer $comtype
  */
 class XzScenic extends CActiveRecord
 {
@@ -52,7 +53,7 @@ class XzScenic extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('title, content, top, atime, zone, lat, lng, around', 'required'),
-			array('top, atime', 'numerical', 'integerOnly'=>true),
+			array('top, atime, comtype', 'numerical', 'integerOnly'=>true),
 			array('title, mp3, add', 'length', 'max'=>128),
 			array('ptime, x, y, zone', 'length', 'max'=>32),
 			array('icon, hicon', 'length', 'max'=>64),
@@ -60,7 +61,7 @@ class XzScenic extends CActiveRecord
 			array('desc, img', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, title, desc, content, top, mp3, atime, ptime, img, add, x, y, zone, icon, lat, lng, around, hicon', 'safe', 'on'=>'search'),
+			array('id, title, desc, content, top, mp3, atime, ptime, img, add, x, y, zone, icon, lat, lng, around, hicon, comtype', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,6 +100,7 @@ class XzScenic extends CActiveRecord
 			'lng' => 'Lng',
 			'around' => 'Around',
 			'hicon' => 'Hicon',
+			'comtype' => 'Comtype',
 		);
 	}
 
@@ -131,6 +133,7 @@ class XzScenic extends CActiveRecord
 		$criteria->compare('lng',$this->lng,true);
 		$criteria->compare('around',$this->around,true);
 		$criteria->compare('hicon',$this->hicon,true);
+		$criteria->compare('comtype',$this->comtype);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

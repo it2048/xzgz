@@ -26,14 +26,14 @@ class AdminhomesetController extends AdminSet
 
     public function actionIndex()
     {
-        $model = AppJxConfig::model()->findAll();
+        $model = AppXzConfig::model()->findAll();
         $this->renderPartial('index',array("models"=>$model));
     }
     public function actionSave() {
         $msg = $this->msgcode();
-        $model = AppJxConfig::model()->findAll();
+        $model = AppXzConfig::model()->findAll();
         foreach ($model as $value) {
-            $mod = AppJxConfig::model()->findByPk($value['name']);
+            $mod = AppXzConfig::model()->findByPk($value['name']);
             $mod->value = Yii::app()->getRequest()->getParam($value['name'], "");
             $mod->save();
         }
