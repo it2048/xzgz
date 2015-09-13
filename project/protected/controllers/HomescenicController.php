@@ -440,6 +440,54 @@ class HomescenicController extends AdminSet
     }
 
     /**
+     * 关闭评论
+     */
+    public function actionGb()
+    {
+        $msg = $this->msgcode();
+        $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
+        if($id!=0)
+        {
+            $tm = AppXzScenic::model()->findByPk($id);
+            $tm->comtype = 1;
+            if($tm->save())
+            {
+                $this->msgsucc($msg);
+            }
+            else
+                $msg['msg'] = "评论关闭失败";
+        }else
+        {
+            $msg['msg'] = "id不能为空";
+        }
+        echo json_encode($msg);
+    }
+    /**
+     * 关闭评论
+     */
+    public function actionDk()
+    {
+        $msg = $this->msgcode();
+        $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
+        if($id!=0)
+        {
+            $tm = AppXzScenic::model()->findByPk($id);
+            $tm->comtype = 0;
+            if($tm->save())
+            {
+                $this->msgsucc($msg);
+            }
+            else
+                $msg['msg'] = "评论开启失败";
+        }else
+        {
+            $msg['msg'] = "id不能为空";
+        }
+        echo json_encode($msg);
+    }
+
+
+    /**
      * 删除新闻
      */
     public function actionNewsDel()
