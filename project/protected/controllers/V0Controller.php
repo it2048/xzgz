@@ -545,6 +545,10 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     * 获取景点详情
+     * @param $arr
+     */
     public function scenicdetails($arr)
     {
         $msg = $this->msgcode();
@@ -578,7 +582,9 @@ class V0Controller extends Controller
                     "content"=>$this->zm($allList->content),
                     "mp3"=>$this->getUrl($allList->mp3),
                     "share"=>$this->utrl.'/api/xzgz/project/index.php/home/scenic/id/'.$allList->id,
-                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/jq/id/'.$allList->id
+                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/jq/id/'.$allList->id,
+                    "lat"=>$allList->lat,"lng"=>$allList->lng,
+
                 );
             }else
             {
@@ -1127,7 +1133,6 @@ class V0Controller extends Controller
     }
 
 
-
     /**
      * 收藏的状态
      * @param $arr
@@ -1570,18 +1575,21 @@ class V0Controller extends Controller
         return $rtn;
     }
 
-    public function search($arr)
+    /**
+     * 搜索景点功能
+     * @param $arr
+     */
+    public function searchScenic($arr)
     {
         $page = empty($arr['page'])?1:$arr['page'];
         $words = $arr['words'];
         if($page<1)$page=1;
         $listArr = array();
         $cnt = ($page-1)*20;
-        $list = AppJxNews::model()->findAll("title like '%{$words}%' or content like '%{$words}%' order by id desc limit {$cnt},20");
+        $list = AppXzScenic::model()->findAll("title like '%{$words}%' or content like '%{$words}%' order by id desc limit {$cnt},20");
         foreach($list as $val)
         {
             $content = html_entity_decode(trim(strip_tags($val['content'])));
-            $type = $val['type']==2?1:0;
             if(mb_strpos($val['title'],$words,1,"utf-8")!=false)
                 $summary = mb_substr($content,0,30,"utf-8");
             else
@@ -1599,8 +1607,9 @@ class V0Controller extends Controller
                 }
                 $summary = mb_substr($content,$star,$lmt,"utf-8");
             }
-            array_push($listArr,array("id"=>$val['id'],"addtime"=>$val['addtime'],"title"=>$val['title'],"summary"=>$summary,
-            "type"=>$type));
+            array_push($listArr,array("id"=>$val['id'],"addtime"=>$val['atime'],"title"=>$val['title'],
+                "summary"=>$summary
+            ));
         }
         $msg['code'] = 0;
         $msg['msg'] = "成功";
@@ -1609,6 +1618,48 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     * 搜索商店功能
+     * @param $arr
+     */
+    public function searchShop($arr)
+    {
+        $page = empty($arr['page'])?1:$arr['page'];
+        $words = $arr['words'];
+        if($page<1)$page=1;
+        $listArr = array();
+        $cnt = ($page-1)*20;
+        $list = AppXzShop::model()->findAll("name like '%{$words}%' or content like '%{$words}%' order by id desc limit {$cnt},20");
+        foreach($list as $val)
+        {
+            $content = html_entity_decode(trim(strip_tags($val['content'])));
+            if(mb_strpos($val['name'],$words,1,"utf-8")!=false)
+                $summary = mb_substr($content,0,30,"utf-8");
+            else
+            {
+                $k = mb_strpos($content,$words,1,"utf-8");
+                $lmt = 30;
+                if($k<10)
+                {
+                    $star = $k;
+                    $lmt = $lmt+10-$star;
+                }
+                else
+                {
+                    $star = $k-10;
+                }
+                $summary = mb_substr($content,$star,$lmt,"utf-8");
+            }
+            array_push($listArr,array("id"=>$val['id'],"title"=>$val['name'],
+                "summary"=>$summary
+            ));
+        }
+        $msg['code'] = 0;
+        $msg['msg'] = "成功";
+        $msg['data'] = $listArr;
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
 
     public function actionSms()
     {
@@ -1664,8 +1715,8 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'homenews',
-            'zonecode' => 'xy4',
+            'action' => 'searchShop',
+            'words' => '瓦罐',
             'news_id' => '34',
             'page'=>1
         );
@@ -1680,7 +1731,7 @@ class V0Controller extends Controller
             "sign"=>$sign
         );
         $url = true?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
-echo RemoteCurl::getInstance()->post($url,$rtnList);die();
+//echo RemoteCurl::getInstance()->post($url,$rtnList);die();
 
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
     }
