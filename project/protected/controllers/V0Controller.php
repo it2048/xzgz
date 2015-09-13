@@ -213,7 +213,7 @@ class V0Controller extends Controller
             array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title']));
         }
 
-        $zname = TmpList::$zone_list[$zone];
+        $zname = $zone=='xy4'?'康定县':TmpList::$zone_list[$zone];
         $url = "http://api.map.baidu.com/telematics/v3/weather?location={$zname}&output=json&ak=0QDaLukGIKr22SwQKTWNxGSz";
 
         $data = json_decode(RemoteCurl::getInstance()->get($url),true);
@@ -240,7 +240,7 @@ class V0Controller extends Controller
             }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>empty($allList)?"":$allList);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
         $this->getNotice($msg);
         echo json_encode($msg);
     }
