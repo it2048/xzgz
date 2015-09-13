@@ -213,7 +213,7 @@ class V0Controller extends Controller
             array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title']));
         }
 
-        $zname = $zone=='xy4'?'康定县':TmpList::$zone_list[$zone];
+        $zname = ($zone=='xy4'||$zone=='xy1')?'康定':TmpList::$zone_list[$zone];
         $url = "http://api.map.baidu.com/telematics/v3/weather?location={$zname}&output=json&ak=0QDaLukGIKr22SwQKTWNxGSz";
 
         $data = json_decode(RemoteCurl::getInstance()->get($url),true);
@@ -231,7 +231,7 @@ class V0Controller extends Controller
                     $crent = str_replace("℃","",$crent);
                 }else
                 {
-                    $crent = mb_substr($model[0]['date'],$start+3,-1);
+                    $crent = substr($model[0]['date'],$start+3,-4);
                 }
                 $day = "星期".mb_substr($model[0]['date'],3,3);
                 $allList = array("temperature"=>$crent,"date"=>date("Y.m.d",time()),
@@ -1527,7 +1527,8 @@ class V0Controller extends Controller
                 $this->msgsucc($msg);
                 $model = $data['results'][0]['weather_data'];
                 $start = strpos($model[0]['date'],"：");
-                $crent = mb_substr($model[0]['date'],$start+3,strlen($model[0]['date'])-1);
+                $crent = substr($model[0]['date'],$start+3,-4);
+
                 foreach($model as $k=>$val)
                 {
                     $crent = $k==0?$crent:"";
