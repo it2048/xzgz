@@ -35,4 +35,9 @@ class TmpList
         "2"=>"行走攻略",
         "3"=>"首页幻灯"
     );
+
+    public static $news = array(
+        "1"=>"新闻贴士",
+        "2"=>"景点"
+    );
 }

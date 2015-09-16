@@ -491,6 +491,7 @@ class V0Controller extends Controller
                 $img = empty($allList->img)?"":$this->utrl.Yii::app()->request->baseUrl.$allList->img;
                 $msg['data'] = array("id"=>$id,"title"=>$allList->title,"date"=>date("Y-m-d",$allList->stime),"source"=>$allList->source,"img"=>$img,
                     "content"=>$this->zm($allList->content),
+                    "comment"=>$allList->comtype,
                     "share"=>$this->utrl.'/api/xzgz/project/index.php/home/index/id/'.$id,
                     "url"=>$this->utrl.'/api/xzgz/project/index.php/home/home/id/'.$id
                 );
@@ -581,6 +582,7 @@ class V0Controller extends Controller
                     "address"=>$allList->add,
                     "content"=>$this->zm($allList->content),
                     "mp3"=>$this->getUrl($allList->mp3),
+                    "comment"=>$allList->comtype,
                     "share"=>$this->utrl.'/api/xzgz/project/index.php/home/scenic/id/'.$allList->id,
                     "url"=>$this->utrl.'/api/xzgz/project/index.php/home/jq/id/'.$allList->id,
                     "lat"=>$allList->lat,"lng"=>$allList->lng,

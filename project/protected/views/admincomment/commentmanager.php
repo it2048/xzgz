@@ -8,6 +8,7 @@
         <tr>
             <th width="20">编号</th>
             <th width="90">新闻标题</th>
+            <th width="40">文章类型</th>
             <th width="60">用户帐号</th>
             <th width="60">回复内容</th>
             <th width="40">回复人帐号</th>
@@ -19,11 +20,18 @@
         <?php foreach ($models as $value) {?>
             <tr>
                 <td><?php echo $value['id']; ?></td>
-                <td><?php echo empty($newApp[$value['news_id']])?$value['news_id']:$newApp[$value['news_id']]; ?></td>
+                <td><?php
+                    if($value['type']==1)
+                        echo empty($newApp[$value['news_id']])?$value['news_id']:$newApp[$value['news_id']];
+                    else
+                        echo empty($scApp[$value['news_id']])?$value['news_id']:$scApp[$value['news_id']];
+                    ?></td>
+                <td><?php echo TmpList::$news[$value['type']]; ?></td>
                 <td><?php echo empty($userApp[$value['user_id']])?$value['user_id']:$userApp[$value['user_id']]; ?></td>
                 <td><?php echo $value['comment']; ?></td>
                 <td><?php echo $value['parent_user']; ?></td>
                 <td><?php echo date("Y-m-d H:i:s", $value['addtime']); ?></td>
+
                 <td>
                     <a title="确实要删除这条记录吗?" callback="deleteAuCall" target="ajaxTodo" href="<?php echo Yii::app()->createAbsoluteUrl('admincomment/commentdel',array('id'=>$value['id'])); ?>" class="btnDel">删除</a>
                 </td>

@@ -12,29 +12,44 @@ class AdmincommentController extends AdminSet
         $pages['countPage'] = Yii::app()->getRequest()->getParam("countPage", 0); //总共多少记录
         $pages['numPerPage'] = Yii::app()->getRequest()->getParam("numPerPage", 50); //每页多少条数据
         $criteria = new CDbCriteria;
-        $pages['countPage'] = AppJxComment::model()->count($criteria);
+        $pages['countPage'] = AppXzComment::model()->count($criteria);
         $criteria->limit = $pages['numPerPage'];
         $criteria->offset = $pages['numPerPage'] * ($pages['pageNum'] - 1);
         $criteria->order = 'id DESC';
-        $allList = AppJxComment::model()->findAll($criteria);
+        $allList = AppXzComment::model()->findAll($criteria);
 
         $strNew = "";
+        $strCre = "";
         $strUser = "";
         foreach($allList as $val)
         {
-            $strNew .= $val->news_id.",";
+            if($val->type==1)
+                $strNew .= $val->news_id.",";
+            if($val->type==2)
+                $strCre .= $val->news_id.",";
             $strUser .= $val->user_id.",";
         }
         $newApp = array();
+        $scApp = array();
         $userApp = array();
         $strNew = rtrim($strNew,",");
+        $strCre = rtrim($strCre,",");
+
         $strUser = rtrim($strUser,",");
         if($strNew != "")
         {
-            $newsList = AppJxNews::model()->findAll("id in ({$strNew})");
+            $newsList = AppXzTips::model()->findAll("id in ({$strNew})");
             foreach($newsList as $val)
             {
                 $newApp[$val->id] = $val->title;
+            }
+        }
+        if($strCre != "")
+        {
+            $newsList = AppXzScenic::model()->findAll("id in ({$strCre})");
+            foreach($newsList as $val)
+            {
+                $scApp[$val->id] = $val->title;
             }
         }
         if($strUser != "")
@@ -46,11 +61,10 @@ class AdmincommentController extends AdminSet
             }
 
         }
-
-
         $this->renderPartial('commentmanager', array(
             'models' => $allList,
             'pages' => $pages,
+            'scApp' => $scApp,
             'newApp' => $newApp,
             'userApp' => $userApp,
         ),false,true);
@@ -65,13 +79,7 @@ class AdmincommentController extends AdminSet
         $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
         if($id!=0)
         {
-            $comm = AppJxComment::model()->findByPk($id);
-            $news = AppJxNews::model()->findByPk($comm->news_id);
-            if(!empty($news))
-            {
-                $news->comment = $news->comment-1;
-                $news->save();
-            }
+            $comm = AppXzComment::model()->findByPk($id);
             if($comm->delete())
             {
                 $this->msgsucc($msg);
