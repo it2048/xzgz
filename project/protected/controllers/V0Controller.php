@@ -1581,41 +1581,55 @@ class V0Controller extends Controller
      * 搜索景点功能
      * @param $arr
      */
+    public function keyWords($arr)
+    {
+        $list = AppXzConfig::model()->findByPk("search");
+        $listArr = explode(",",$list->value);
+        $msg['code'] = 0;
+        $msg['msg'] = "成功";
+        $msg['data'] = $listArr;
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
+    /**
+     * 搜索景点功能
+     * @param $arr
+     */
     public function searchScenic($arr)
     {
         $page = empty($arr['page'])?1:$arr['page'];
         $words = $arr['words'];
         if($page<1)$page=1;
-        $listArr = array();
         $cnt = ($page-1)*20;
         $list = AppXzScenic::model()->findAll("title like '%{$words}%' or content like '%{$words}%' order by id desc limit {$cnt},20");
-        foreach($list as $val)
+        $data = array();
+        foreach($list as $value)
         {
-            $content = html_entity_decode(trim(strip_tags($val['content'])));
-            if(mb_strpos($val['title'],$words,1,"utf-8")!=false)
-                $summary = mb_substr($content,0,30,"utf-8");
-            else
+            $img = "";
+            if(!empty($value['img']))
             {
-                $k = mb_strpos($content,$words,1,"utf-8");
-                $lmt = 30;
-                if($k<10)
-                {
-                    $star = $k;
-                    $lmt = $lmt+10-$star;
-                }
-                else
-                {
-                    $star = $k-10;
-                }
-                $summary = mb_substr($content,$star,$lmt,"utf-8");
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
             }
-            array_push($listArr,array("id"=>$val['id'],"addtime"=>$val['atime'],"title"=>$val['title'],
-                "summary"=>$summary
+            $icon = empty($value['icon'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['icon'];
+            $mp3 = empty($value['mp3'])?"":$this->utrl.Yii::app()->request->baseUrl.$value['mp3'];
+            array_push($data,array(
+                "scenic_id"=>$value['id'], //新闻编号
+                "ptime"=>$value['ptime'],
+                "name"=>$value['title'],
+                "desc"=>$value['desc'],
+                "img"=>$img,
+                "icon"=>$icon,
+                "top"=>$value['top'],
+                "mp3"=>$mp3,
+                "x"=>$value['x'],
+                "y"=>$value['y']
             ));
         }
         $msg['code'] = 0;
         $msg['msg'] = "成功";
-        $msg['data'] = $listArr;
+        $msg['data'] = $data;
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -1629,36 +1643,32 @@ class V0Controller extends Controller
         $page = empty($arr['page'])?1:$arr['page'];
         $words = $arr['words'];
         if($page<1)$page=1;
-        $listArr = array();
+        $data = array();
         $cnt = ($page-1)*20;
         $list = AppXzShop::model()->findAll("name like '%{$words}%' or content like '%{$words}%' order by id desc limit {$cnt},20");
-        foreach($list as $val)
+        foreach($list as $value)
         {
-            $content = html_entity_decode(trim(strip_tags($val['content'])));
-            if(mb_strpos($val['name'],$words,1,"utf-8")!=false)
-                $summary = mb_substr($content,0,30,"utf-8");
-            else
+            $img = "";
+            if(!empty($value['img']))
             {
-                $k = mb_strpos($content,$words,1,"utf-8");
-                $lmt = 30;
-                if($k<10)
-                {
-                    $star = $k;
-                    $lmt = $lmt+10-$star;
-                }
-                else
-                {
-                    $star = $k-10;
-                }
-                $summary = mb_substr($content,$star,$lmt,"utf-8");
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
             }
-            array_push($listArr,array("id"=>$val['id'],"title"=>$val['name'],
-                "summary"=>$summary
+            array_push($data,array(
+                "shop_id"=>$value['id'], //商店编号
+                "name"=>$value['name'],
+                "star"=>$value['star'],
+                "tag"=>$value['tag'],
+                "money"=>$value['money'],
+                "tag"=>$value['tag'],
+                "img"=>$img,
+                "lng"=>$value['lng'],
+                "lat"=>$value['lat']
             ));
         }
         $msg['code'] = 0;
         $msg['msg'] = "成功";
-        $msg['data'] = $listArr;
+        $msg['data'] = $data;
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -1718,7 +1728,7 @@ class V0Controller extends Controller
 
         $params = array(
             'action' => 'searchShop',
-            'words' => '瓦罐',
+            'words' => '面',
             'news_id' => '34',
             'page'=>1
         );
