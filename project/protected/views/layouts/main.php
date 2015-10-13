@@ -68,6 +68,11 @@
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homenews/index'); ?>" target="navTab" rel="homenews">首页新闻</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homescenic/index'); ?>" target="navTab" rel="scenic">景区介绍</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeshop/index'); ?>" target="navTab" rel="shop">商店管理</a></li>
+
+                                <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeconvenient/index'); ?>" target="navTab" rel="commentmanager">便民点管理</a></li>
+                                <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homenative/index'); ?>" target="navTab" rel="commentmanager">特产商店管理</a></li>
+                                <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeitem/index'); ?>" target="navTab" rel="commentmanager">特产商品管理</a></li>
+
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeachieve/index'); ?>" target="navTab" rel="homeachieve">成就管理</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('adminblack/index'); ?>" target="navTab" rel="adminblack">短信黑名单</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('adminhomeset/index'); ?>" target="navTab" rel="index">常用配置</a></li>
