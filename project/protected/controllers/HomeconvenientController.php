@@ -1,6 +1,6 @@
 <?php
 
-class HomeconvenientController extends Controller
+class HomeconvenientController extends AdminSet
 {
 	/**
 	 * Lists all models.
@@ -44,7 +44,6 @@ class HomeconvenientController extends Controller
 
 
         $add = Yii::app()->getRequest()->getParam("shop_add", ""); //地址
-        $tag = Yii::app()->getRequest()->getParam("shop_tag", ""); //标签
 
         $office = Yii::app()->getRequest()->getParam("shop_office", ""); //游玩时间
 
@@ -55,7 +54,7 @@ class HomeconvenientController extends Controller
 
 
         $idArr = array();
-        if($title!=""||$zone=="")
+        if($title!=""&&$zone!="")
         {
             for($i=0;$i<30;$i++)
             {
@@ -132,7 +131,7 @@ class HomeconvenientController extends Controller
         $model = AppXzConvenient::model()->findByPk($id);
 
         $idArr = array();
-        if($title!=""||$zone=="")
+        if($title!=""&&$zone!="")
         {
             for($i=0;$i<30;$i++)
             {

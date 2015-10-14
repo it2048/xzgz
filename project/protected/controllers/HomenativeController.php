@@ -61,7 +61,7 @@ class HomenativeController extends AdminSet{
 
 
         $idArr = array();
-        if($title!=""||$zone=="")
+        if($title!=""&&$zone!="")
         {
             for($i=0;$i<30;$i++)
             {
@@ -142,7 +142,7 @@ class HomenativeController extends AdminSet{
         $model = AppXzNative::model()->findByPk($id);
 
         $idArr = array();
-        if($title!=""||$zone=="")
+        if($title!=""&&$zone!="")
         {
             for($i=0;$i<30;$i++)
             {

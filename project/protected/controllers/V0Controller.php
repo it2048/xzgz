@@ -1699,6 +1699,193 @@ class V0Controller extends Controller
 
     }
 
+
+    /**
+     * 获取本地特产接口
+     * @param $arr
+     *
+     */
+    public function getnativelist($arr)
+    {
+        $msg = $this->msgcode();
+        $zone = $arr['zonecode'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("zone='{$zone}'");
+        $criteria->limit = 20;
+        $criteria->offset = 20 * ($page - 1);
+        $allList = AppXzNative::model()->findAll($criteria);
+        $data = array();
+        foreach ($allList as $value) {
+            $img = "";
+            if(!empty($value['img']))
+            {
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+            }
+            array_push($data,array(
+                "native_id"=>$value['id'], //商店编号
+                "name"=>$value['name'],
+                "star"=>$value['star'],
+                "img"=>$img,
+                "lng"=>$value['lng'],
+                "lat"=>$value['lat']
+            ));
+        }
+        $this->msgsucc($msg);
+        $msg['data'] = $data;
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
+    /**
+     * 当地特产详情
+     * @param $arr
+     */
+    public function nativedetails($arr)
+    {
+        $msg = $this->msgcode();
+        if(empty($arr['nativeid']))
+        {
+            $msg['msg'] = "本地特产编号参数未传入";
+        }else
+        {
+            $id = $arr['nativeid'];
+            $allList = AppXzNative::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $this->msgsucc($msg);
+                $mgArr = array();
+                if(!empty($allList->img))
+                {
+                    $imgArr = json_decode($allList->img,true);
+                    if(is_array($imgArr))
+                    {
+                        foreach ($imgArr as $val) {
+                            array_push($mgArr,array("url"=>$this->getUrl($val['url']),"desc"=>$val['desc']));
+                        }
+                    }
+                }
+                $goods = array();
+                $app = AppXzItem::model()->findAll("p_id={$id}");
+                foreach($app as $val)
+                {
+                    array_push($goods,array(
+                        'name'=>$val->name,
+                        'price'=>$val->price,
+                        'img'=>$this->getUrl($val->img)
+                    ));
+                }
+                $msg['data'] = array(
+                    "native_id"=>$allList->id,
+                    "name"=>$allList->name,
+                    "imgList"=>$mgArr,
+                    "star"=>$allList->star,
+                    "zone"=>$allList->zone,
+                    "tel"=>$allList->tel,
+                    "lat"=>$allList->lat,
+                    "lng"=>$allList->lng,
+                    "add"=>$allList->add,
+                    "office"=>$allList->office,
+                    "goods_list"=>$goods
+                );
+            }else
+            {
+                $msg['msg'] = "本地特产不存在";
+            }
+        }
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
+    /**
+     * 获取便名列表接口
+     * @param $arr
+     *
+     */
+    public function getconvenientlist($arr)
+    {
+        $msg = $this->msgcode();
+        $zone = $arr['zonecode'];
+        $page = empty($arr['page'])?1:$arr['page'];
+        if($page<1)$page=1;
+        $criteria = new CDbCriteria;
+        $criteria->addCondition("zone='{$zone}'");
+        $criteria->limit = 20;
+        $criteria->offset = 20 * ($page - 1);
+        $allList = AppXzConvenient::model()->findAll($criteria);
+        $data = array();
+        foreach ($allList as $value) {
+            $img = "";
+            if(!empty($value['img']))
+            {
+                $imgArr = json_decode($value['img'],true);
+                $img = empty($imgArr[0])?"":$this->utrl.Yii::app()->request->baseUrl.$imgArr[0]['url'];
+            }
+            array_push($data,array(
+                "convenient_id"=>$value['id'], //商店编号
+                "name"=>$value['name'],
+                "img"=>$img,
+                "lng"=>$value['lng'],
+                "lat"=>$value['lat']
+            ));
+        }
+        $this->msgsucc($msg);
+        $msg['data'] = $data;
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
+    /**
+     * 便民信息详情
+     * @param $arr
+     */
+    public function convenientdetails($arr)
+    {
+        $msg = $this->msgcode();
+        if(empty($arr['convenientid']))
+        {
+            $msg['msg'] = "便民点编号参数未传入";
+        }else
+        {
+            $id = $arr['convenientid'];
+            $allList = AppXzConvenient::model()->findByPk($id);
+            if(!empty($allList))
+            {
+                $this->msgsucc($msg);
+                $mgArr = array();
+                if(!empty($allList->img))
+                {
+                    $imgArr = json_decode($allList->img,true);
+                    if(is_array($imgArr))
+                    {
+                        foreach ($imgArr as $val) {
+                            array_push($mgArr,array("url"=>$this->getUrl($val['url']),"desc"=>$val['desc']));
+                        }
+                    }
+                }
+                $msg['data'] = array(
+                    "convenient_id"=>$allList->id,
+                    "name"=>$allList->name,
+                    "imgList"=>$mgArr,
+                    "zone"=>$allList->zone,
+                    "tel"=>$allList->tel,
+                    "lat"=>$allList->lat,
+                    "lng"=>$allList->lng,
+                    "add"=>$allList->add,
+                    "office"=>$allList->office,
+                    "content"=>$this->zm($allList->content)
+                );
+            }else
+            {
+                $msg['msg'] = "便民点不存在";
+            }
+        }
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
     public function actionDemo()
     {
 
@@ -1727,9 +1914,10 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'searchShop',
-            'words' => '面',
-            'news_id' => '34',
+            'action' => 'nativedetails',
+            'nativeid' => '3',
+            'zonecode' => 'xy3',
+            'convenientid' => '2',
             'page'=>1
         );
      //   xFl@&^852
