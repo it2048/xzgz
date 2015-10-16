@@ -172,6 +172,23 @@ class HomeController extends Controller {
         }
     }
 
+    public function actionBm() {
+        $id = Yii::app()->getRequest()->getParam("id", "");
+        if ($id == "") {
+            echo "404 便民点不存在啊！";
+        } else {
+            $row = AppXzConvenient::model()->findByPk($id);
+            if (!empty($row)) {
+                $content = $row['content'];
+                $this->render('jq',array("model"=>$this->revc($content)));
+            }
+            else
+            {
+                echo "404 便民点不存在啊！";
+            }
+        }
+    }
+
     /**
      * 商圈
      *

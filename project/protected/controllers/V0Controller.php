@@ -1875,7 +1875,8 @@ class V0Controller extends Controller
                     "lng"=>$allList->lng,
                     "add"=>$allList->add,
                     "office"=>$allList->office,
-                    "content"=>$this->zm($allList->content)
+                    "content"=>$this->zm($allList->content),
+                    "url"=>$this->utrl.'/api/xzgz/project/index.php/home/bm/id/'.$allList->id
                 );
             }else
             {
@@ -1914,7 +1915,7 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'nativedetails',
+            'action' => 'convenientdetails',
             'nativeid' => '3',
             'zonecode' => 'xy3',
             'convenientid' => '2',
