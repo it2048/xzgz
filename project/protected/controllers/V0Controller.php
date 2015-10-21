@@ -1903,6 +1903,30 @@ class V0Controller extends Controller
         echo json_encode($msg);
     }
 
+    /**
+     * 搜索商店功能
+     * @param $arr
+     */
+    public function getadvert($arr)
+    {
+        $msg = $this->msgcode();
+        if(empty($arr['uid']))
+        {
+            $msg['msg'] = "唯一标示参数未传入";
+        }else
+        {
+            $model = AppXzAdvert::model()->find("uid='{$arr['uid']}'");
+            $msg['code'] = 0;
+            $msg['msg'] = "成功";
+            $msg['data'] = array("title"=>$model->title,"content"=>$model->desc,
+                "link"=>$model->link,
+                "img"=>empty($model->img)?"":$this->utrl.Yii::app()->request->baseUrl.$model->img
+            );
+        }
+        $this->getNotice($msg);
+        echo json_encode($msg);
+    }
+
     public function actionDemo()
     {
 
@@ -1931,11 +1955,12 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'homenews',
+            'action' => 'getadvert',
             'nativeid' => '3',
             'zonecode' => 'xy12',
             'convenientid' => '2',
-            'page'=>1
+            'page'=>1,
+            'uid'=>'s_advert'
         );
      //   xFl@&^852
 
