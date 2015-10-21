@@ -9,7 +9,7 @@
                     } ?>
                 </select>
             </p>
-            <?php if($models->img!=""){?><p class="nowrap"><label>封面图片：</label><img width="120" height="120" src="<?php echo Yii::app()->request->baseUrl.$models->img;?>"></img></p>
+            <?php if($models->img!=""){?><p class="nowrap"><label>封面图片：</label><img width="120" height="120" src="<?php echo Yii::app()->request->baseUrl.$models->img;?>"></p>
             <?php }?>
             <p class="nowrap">
                 <label>更换封面图片：</label>

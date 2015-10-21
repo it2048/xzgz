@@ -13,11 +13,11 @@ class HomeadvertController extends AdminSet
         $pages['countPage'] = Yii::app()->getRequest()->getParam("countPage", 0); //总共多少记录
         $pages['numPerPage'] = Yii::app()->getRequest()->getParam("numPerPage", 50); //每页多少条数据
         $criteria = new CDbCriteria;
-        $pages['countPage'] = AppAdvert::model()->count($criteria);
+        $pages['countPage'] = AppXzAdvert::model()->count($criteria);
         $criteria->limit = $pages['numPerPage'];
         $criteria->offset = $pages['numPerPage'] * ($pages['pageNum'] - 1);
         $criteria->order = 'id DESC';
-        $allList = AppAdvert::model()->findAll($criteria);
+        $allList = AppXzAdvert::model()->findAll($criteria);
         $this->renderPartial('index', array(
             'models' => $allList,
             'pages' => $pages),false,true);
@@ -51,7 +51,7 @@ class HomeadvertController extends AdminSet
         $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
         if($id!=0)
         {
-            $tm = AppAdvert::model()->findByPk($id);
+            $tm = AppXzAdvert::model()->findByPk($id);
             $tm->comtype = 1;
             if($tm->save())
             {
@@ -74,7 +74,7 @@ class HomeadvertController extends AdminSet
         $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
         if($id!=0)
         {
-            $tm = AppAdvert::model()->findByPk($id);
+            $tm = AppXzAdvert::model()->findByPk($id);
             $tm->comtype = 0;
             if($tm->save())
             {
@@ -96,14 +96,11 @@ class HomeadvertController extends AdminSet
     public function actionNewsSave()
     {
         $msg = $this->msgcode();
-        $type = Yii::app()->getRequest()->getParam("news_type", 1); //类型
-        $stime = Yii::app()->getRequest()->getParam("stime", ""); //开始时间
-        $etime = Yii::app()->getRequest()->getParam("etime", ""); //结束时间
+        $desc = Yii::app()->getRequest()->getParam("news_desc", ""); //类型
         $title = Yii::app()->getRequest()->getParam("news_title", ""); //标题
-        $content = Yii::app()->getRequest()->getParam("news_content", ""); //内容
-        $source = Yii::app()->getRequest()->getParam("news_source", ""); //内容
-        $tag = Yii::app()->getRequest()->getParam("news_tag", ""); //内容
-        $zone = Yii::app()->getRequest()->getParam("zone", ""); //关联
+        $link = Yii::app()->getRequest()->getParam("news_link", ""); //内容
+        $uid = Yii::app()->getRequest()->getParam("news_uid", ""); //内容
+
         $username = $this->getUserName(); //用户名
         $img_url = "";
         if(!empty($_FILES['news_img']['name']))
@@ -133,19 +130,12 @@ class HomeadvertController extends AdminSet
         if($username!=""&&$title!="")
         {
 
-            $model = new AppAdvert();
+            $model = new AppXzAdvert();
             $model->title = $title;
-            $model->type = $type;
-
-            $model->tag = $tag;
-            $model->source = $source;
-            $model->stime = strtotime($stime);
-            $model->endtime = strtotime($etime);
-            $model->user = $username;
+            $model->desc = $desc;
+            $model->link = $link;
             $model->img = $img_url;
-            $model->content = $content;
-            $model->zone_list = implode(",", $zone);
-
+            $model->uid = $uid;
 
             if($model->save())
             {
@@ -196,7 +186,7 @@ class HomeadvertController extends AdminSet
         $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
         $model = array();
         if($id!="")
-            $model = AppAdvert::model()->findByPk($id);
+            $model = AppXzAdvert::model()->findByPk($id);
         $this->renderPartial('edit',array("models"=>$model));
     }
 
@@ -277,16 +267,13 @@ class HomeadvertController extends AdminSet
     {
         $msg = $this->msgcode();
         $id = Yii::app()->getRequest()->getParam("news_id", ""); //编号
-        $type = Yii::app()->getRequest()->getParam("news_type", 1); //类型
-        $stime = Yii::app()->getRequest()->getParam("stime", ""); //开始时间
-        $etime = Yii::app()->getRequest()->getParam("etime", ""); //结束时间
+        $desc = Yii::app()->getRequest()->getParam("news_desc", ""); //类型
         $title = Yii::app()->getRequest()->getParam("news_title", ""); //标题
-        $content = Yii::app()->getRequest()->getParam("news_content", ""); //内容
-        $source = Yii::app()->getRequest()->getParam("news_source", ""); //内容
-        $tag = Yii::app()->getRequest()->getParam("news_tag", ""); //内容
-        $zone = Yii::app()->getRequest()->getParam("zone", ""); //关联
+        $link = Yii::app()->getRequest()->getParam("news_link", ""); //内容
+        $uid = Yii::app()->getRequest()->getParam("news_uid", ""); //内容
+
         $username = $this->getUserName(); //用户名
-        $model = AppAdvert::model()->findByPk($id);
+        $model = AppXzAdvert::model()->findByPk($id);
         $img_url = $model->img;
         if(!empty($_FILES['news_img']['name']))
         {
@@ -316,18 +303,9 @@ class HomeadvertController extends AdminSet
         if($username!=""&&$title!="")
         {
             $model->title = $title;
-            $model->type = $type;
-
-            $model->tag = $tag;
-
-            $model->stime = strtotime($stime);
-            $model->endtime = strtotime($etime);
-            $model->user = $username;
+            $model->desc = $desc;
+            $model->link = $link;
             $model->img = $img_url;
-            $model->content = $content;
-            $model->zone_list = implode(",", $zone);
-            $model->source = $source;
-
             if($model->save())
             {
                 $this->msgsucc($msg);
@@ -352,7 +330,7 @@ class HomeadvertController extends AdminSet
         $id = Yii::app()->getRequest()->getParam("id", 0); //用户名
         if($id!=0)
         {
-            if(AppAdvert::model()->deleteByPk($id))
+            if(AppXzAdvert::model()->deleteByPk($id))
             {
                 $this->msgsucc($msg);
             }
