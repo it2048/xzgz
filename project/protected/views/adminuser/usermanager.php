@@ -16,7 +16,12 @@
 </div>
 
 <div class="pageContent">
-    <table class="table" width="1040" layoutH="86">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="icon" title="导出数据" target="dwzExport" targetType="navTab"href="<?php echo Yii::app()->createAbsoluteUrl('adminuser/exptp');?>"><span>导出数据</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="1040" layoutH="110">
         <thead>
         <tr>
             <th width="20">编号</th>

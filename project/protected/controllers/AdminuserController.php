@@ -108,4 +108,44 @@ class AdminuserController extends AdminSet
         }
         echo json_encode($msg);
     }
+
+
+    public function actionExptp()
+    {
+        $allList = AppJxUser::model()->findAll();
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="行走甘孜用户列表.csv"');
+        header('Cache-Control: max-age=0');
+        $fp = fopen('php://output', 'a');
+        // 输出Excel列名信息
+        $head = array('编号','电话','昵称','创建时间','账号状态');
+        foreach ($head as $i => $v) {
+            // CSV的Excel支持GBK编码，一定要转换，否则乱码
+            $head[$i] = iconv('utf-8', 'gbk', $v);
+        }
+        // 将数据通过fputcsv写到文件句柄
+        fputcsv($fp, $head);
+        // 计数器
+        $cnt = 0;
+        // 每隔$limit行，刷新一下输出buffer，不要太大，也不要太小
+        $limit = 100000;
+
+        foreach($allList as $value)
+        {
+            $cnt ++;
+            if ($limit == $cnt) { //刷新一下输出buffer，防止由于数据过多造成问题
+                ob_flush();
+                flush();
+                $cnt = 0;
+            }
+            $row = array($value->id,$value->tel,$value->uname,date("Y年m月d日 H:i:s",$value->ctime),$value->type==1?"冻结":"");
+            foreach ($row as $i => $v) {
+                // CSV的Excel支持GBK编码，一定要转换，否则乱码
+                $row[$i] = iconv('utf-8', 'gbk', $v);
+            }
+            //file_put_contents('/Applications/XAMPP/xamppfiles/htdocs/t.log',print_r($row,true),8);
+            fputcsv($fp, $row);
+        }
+    }
 }
