@@ -188,6 +188,7 @@ class V0Controller extends Controller
         $slideArr = array();
         $tipArr = array();
         $helpArr = array();
+        $shareArr = array();
 
         $slide = AppXzTips::model()->findAll("type=:tp and img!='' and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,4",array(":tp"=>3,
             ":tm"=>time()
@@ -197,20 +198,34 @@ class V0Controller extends Controller
             array_push($slideArr,array("news_id"=>$v['id'],"img"=>$pass,"title"=>$v['title']));
         }
 
-        $more = 0;
+        $more1 = 0;
         $tip = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,3",array(":tp"=>1,
             ":tm"=>time()
         ));
         foreach ($tip as $k=>$v ){
             if($k>1){
-                $more = 1;
+                $more1 = 1;
                 break;
             }
             array_push($tipArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
         }
-        $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) order by stime desc limit 0,6",array(":tp"=>2));
-        foreach ($help as $v ){
-            array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title']));
+
+        $more2 = 0;
+        $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,5",array(":tp"=>2,
+            ":tm"=>time()
+        ));
+        foreach ($help as $k=>$v ){
+            if($k>5){
+                $more2 = 1;
+                break;
+            }
+            array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
+        }
+
+
+        $share = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) order by stime desc limit 0,6",array(":tp"=>4));
+        foreach ($share as $k=>$v ){
+            array_push($shareArr,array("news_id"=>$v['id'],"title"=>$v['title']));
         }
 
         $zname = ($zone=='xy4'||$zone=='xy1')?'康定':TmpList::$zone_list[$zone];
@@ -240,7 +255,8 @@ class V0Controller extends Controller
             }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more1,"list"=>$tipArr),"help"=>array("more"=>$more2,"list"=>$helpArr)
+        ,"share"=>$shareArr,"weather"=>$allList);
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -1915,9 +1931,9 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'convenientdetails',
+            'action' => 'homenews',
             'nativeid' => '3',
-            'zonecode' => 'xy3',
+            'zonecode' => 'xy12',
             'convenientid' => '2',
             'page'=>1
         );

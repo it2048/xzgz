@@ -33,7 +33,8 @@ class TmpList
     public static $news_list = array(
         "1"=>"景区小贴士",
         "2"=>"行走攻略",
-        "3"=>"首页幻灯"
+        "3"=>"首页幻灯",
+        "4"=>"游记分享"
     );
 
     public static $news = array(

@@ -77,6 +77,8 @@
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('adminblack/index'); ?>" target="navTab" rel="adminblack">短信黑名单</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('adminhomeset/index'); ?>" target="navTab" rel="index">常用配置</a></li>
                                 <li><a href="<?php echo Yii::app()->createAbsoluteUrl('admincomment/commentmanager'); ?>" target="navTab" rel="commentmanager">评论管理</a></li>
+                                <li><a href="<?php echo Yii::app()->createAbsoluteUrl('homeadvert/index'); ?>" target="navTab" rel="advertmanager">广告管理</a></li>
+
 
                             </ul>
                         </li>
