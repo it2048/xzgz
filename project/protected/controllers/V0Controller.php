@@ -198,27 +198,16 @@ class V0Controller extends Controller
             array_push($slideArr,array("news_id"=>$v['id'],"img"=>$pass,"title"=>$v['title']));
         }
 
-        $more1 = 0;
         $tip = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,3",array(":tp"=>1,
             ":tm"=>time()
         ));
         foreach ($tip as $k=>$v ){
-            if($k>1){
-                $more1 = 1;
-                break;
-            }
             array_push($tipArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
         }
-
-        $more2 = 0;
         $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,5",array(":tp"=>2,
             ":tm"=>time()
         ));
         foreach ($help as $k=>$v ){
-            if($k>5){
-                $more2 = 1;
-                break;
-            }
             array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
         }
 
@@ -255,8 +244,8 @@ class V0Controller extends Controller
             }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more1,"list"=>$tipArr),"help"=>array("more"=>$more2,"list"=>$helpArr)
-        ,"share"=>$shareArr,"weather"=>$allList);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>1,"list"=>$tipArr),"help"=>array("more"=>1,"list"=>$helpArr)
+        ,"share"=>array("more"=>1,"list"=>$shareArr),"weather"=>$allList);
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -1955,7 +1944,7 @@ class V0Controller extends Controller
 //        );
 
         $params = array(
-            'action' => 'getadvert',
+            'action' => 'homenews',
             'nativeid' => '3',
             'zonecode' => 'xy12',
             'convenientid' => '2',
