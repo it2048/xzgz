@@ -1,6 +1,6 @@
 <?php
 
-class V0Controller extends Controller
+class V1Controller extends Controller
 {
     public $utrl = "http://120.24.234.19";
 
@@ -89,7 +89,7 @@ class V0Controller extends Controller
         $msg['data'] = array("user"=>$x,"id"=>$y);
         echo json_encode($msg);
     }
-    
+
     public function setplay($arr)
     {
         $msg = $this->msgcode();
@@ -115,7 +115,7 @@ class V0Controller extends Controller
                 $ar = $this->getDistance($y,$x,$model->lng,$model->lat);
                 if($ar<$model->around)
                 {
-                    
+
                     $pk = AppXzFly::model()->findAll("zone='{$id}' and user_id={$user_id}");
                     if(empty($pk))
                     {
@@ -188,6 +188,7 @@ class V0Controller extends Controller
         $slideArr = array();
         $tipArr = array();
         $helpArr = array();
+        $shareArr = array();
 
         $slide = AppXzTips::model()->findAll("type=:tp and img!='' and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,4",array(":tp"=>3,
             ":tm"=>time()
@@ -197,20 +198,23 @@ class V0Controller extends Controller
             array_push($slideArr,array("news_id"=>$v['id'],"img"=>$pass,"title"=>$v['title']));
         }
 
-        $more = 0;
         $tip = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,3",array(":tp"=>1,
             ":tm"=>time()
         ));
         foreach ($tip as $k=>$v ){
-            if($k>1){
-                $more = 1;
-                break;
-            }
             array_push($tipArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
         }
-        $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) order by stime desc limit 0,6",array(":tp"=>2));
-        foreach ($help as $v ){
-            array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title']));
+        $help = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) and stime<:tm and endtime>:tm order by stime desc limit 0,5",array(":tp"=>2,
+            ":tm"=>time()
+        ));
+        foreach ($help as $k=>$v ){
+            array_push($helpArr,array("news_id"=>$v['id'],"title"=>$v['title'],"tag"=>$v['tag']));
+        }
+
+
+        $share = AppXzTips::model()->findAll("type=:tp and FIND_IN_SET('{$zone}',zone_list) order by stime desc limit 0,6",array(":tp"=>4));
+        foreach ($share as $k=>$v ){
+            array_push($shareArr,array("news_id"=>$v['id'],"title"=>$v['title']));
         }
 
         $zname = ($zone=='xy4'||$zone=='xy1')?'康定':TmpList::$zone_list[$zone];
@@ -240,7 +244,8 @@ class V0Controller extends Controller
             }
         }
         $this->msgsucc($msg);
-        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>$more,"list"=>$tipArr),"help"=>$helpArr,"weather"=>$allList);
+        $msg['data'] = array("slide"=>$slideArr,"tip"=>array("more"=>1,"list"=>$tipArr),"help"=>array("more"=>1,"list"=>$helpArr)
+        ,"share"=>array("more"=>1,"list"=>$shareArr),"weather"=>$allList);
         $this->getNotice($msg);
         echo json_encode($msg);
     }
@@ -334,7 +339,7 @@ class V0Controller extends Controller
         $criteria->addCondition("type={$type} and FIND_IN_SET('{$zone}',zone_list)");
         $tm = time();
         if($type==1||$type==3)
-             $criteria->addCondition("stime<{$tm} and endtime>{$tm}");
+            $criteria->addCondition("stime<{$tm} and endtime>{$tm}");
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $criteria->order = 'stime DESC';
@@ -470,7 +475,7 @@ class V0Controller extends Controller
         }
         return sprintf($strmp,$str);
     }
-    
+
     /**
      * 获取新闻详情
      * @param type $arr
@@ -483,8 +488,8 @@ class V0Controller extends Controller
             $msg['msg'] = "新闻编号参数未传入";
         }else
         {
-             $id = $arr['news_id'];
-             $allList = AppXzTips::model()->findByPk($id);
+            $id = $arr['news_id'];
+            $allList = AppXzTips::model()->findByPk($id);
             if(!empty($allList))
             {
                 $this->msgsucc($msg);
@@ -503,7 +508,7 @@ class V0Controller extends Controller
         $this->getNotice($msg);
         echo json_encode($msg);
     }
-    
+
     /**
      * 获取新闻列表和分页接口
      * @param $arr
@@ -513,7 +518,7 @@ class V0Controller extends Controller
     {
         $msg = $this->msgcode();
         $zone = $arr['zonecode'];
-        
+
         $criteria = new CDbCriteria;
         $criteria->addCondition("zone='{$zone}'");
         $allList = AppXzScenic::model()->findAll($criteria);
@@ -558,8 +563,8 @@ class V0Controller extends Controller
             $msg['msg'] = "景点编号参数未传入";
         }else
         {
-             $id = $arr['scenic_id'];
-             $allList = AppXzScenic::model()->findByPk($id);
+            $id = $arr['scenic_id'];
+            $allList = AppXzScenic::model()->findByPk($id);
             if(!empty($allList))
             {
                 $this->msgsucc($msg);
@@ -1271,7 +1276,7 @@ class V0Controller extends Controller
         $this->getNotice($msg);
         echo json_encode($msg);
     }
-    
+
     public function usercenter($arr)
     {
         $msg = $this->msgcode();
@@ -1292,7 +1297,7 @@ class V0Controller extends Controller
             foreach ($fly as $value) {
                 array_push($paly, $value['zone']);
             }
-            
+
             $charr = array();
             foreach ($ch as $value) {
                 array_push($charr, $value['alias_id']);
@@ -1363,7 +1368,7 @@ class V0Controller extends Controller
             $msg['code'] = 2;
             $msg['msg'] = "无权限，请登录";
         }else{
-            
+
             $connection = Yii::app()->db;
             $sql = "SELECT * FROM xz_fly left join xz_scenic on xz_fly.zone = xz_scenic.id where xz_fly.user_id={$user_id} and xz_scenic.title is not null order by time desc limit {$cnt},21"; //构造SQL
             $sqlCom = $connection->createCommand($sql);
@@ -1946,7 +1951,7 @@ class V0Controller extends Controller
             'page'=>1,
             'uid'=>'s_advert'
         );
-     //   xFl@&^852
+        //   xFl@&^852
 
         //[id] => 1 [token] => c88d5135ac6b59c4
         $salt = "xFlaSd!$&258";
