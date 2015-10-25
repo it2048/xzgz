@@ -21,7 +21,7 @@ class V1Controller extends Controller
             $reques = json_decode($data,true);
             $this->user_id = empty($reques['user_id'])?"":$reques['user_id'];
             $this->token = empty($reques['token'])?"":$reques['token'];
-            if(!call_user_func(array('V0Controller',$reques['action']),$reques))
+            if(!call_user_func(array('V1Controller',$reques['action']),$reques))
             {
                 die();
             }
