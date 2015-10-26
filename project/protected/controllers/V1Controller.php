@@ -402,7 +402,7 @@ class V1Controller extends Controller
                 "img"=>$img,
                 "lng"=>$value['lng'],
                 "lat"=>$value['lat'],
-                "zonecode"=>$value['zone']
+                "zone"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
@@ -1751,7 +1751,7 @@ class V1Controller extends Controller
                 "img"=>$img,
                 "lng"=>$value['lng'],
                 "lat"=>$value['lat'],
-                "zonecode"=>$value['zone']
+                "zone"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
@@ -1858,7 +1858,7 @@ class V1Controller extends Controller
                 "img"=>$img,
                 "lng"=>$value['lng'],
                 "lat"=>$value['lat'],
-                "zonecode"=>$value['zone']
+                "zone"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
