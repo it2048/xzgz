@@ -377,6 +377,13 @@ class V1Controller extends Controller
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $allList = AppXzShop::model()->findAll($criteria);
+        if(empty($allList))
+        {
+            $criteria1 = new CDbCriteria;
+            $criteria1->limit = 20;
+            $criteria1->offset = 20 * ($page - 1);
+            $allList = AppXzShop::model()->findAll($criteria1);
+        }
         $data = array();
         foreach ($allList as $value) {
             $img = "";
@@ -394,7 +401,8 @@ class V1Controller extends Controller
                 "tag"=>$value['tag'],
                 "img"=>$img,
                 "lng"=>$value['lng'],
-                "lat"=>$value['lat']
+                "lat"=>$value['lat'],
+                "zonecode"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
@@ -1721,6 +1729,13 @@ class V1Controller extends Controller
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $allList = AppXzNative::model()->findAll($criteria);
+        if(empty($allList))
+        {
+            $criteria1 = new CDbCriteria;
+            $criteria1->limit = 20;
+            $criteria1->offset = 20 * ($page - 1);
+            $allList = AppXzNative::model()->findAll($criteria1);
+        }
         $data = array();
         foreach ($allList as $value) {
             $img = "";
@@ -1735,7 +1750,8 @@ class V1Controller extends Controller
                 "star"=>$value['star'],
                 "img"=>$img,
                 "lng"=>$value['lng'],
-                "lat"=>$value['lat']
+                "lat"=>$value['lat'],
+                "zonecode"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
@@ -1820,6 +1836,14 @@ class V1Controller extends Controller
         $criteria->limit = 20;
         $criteria->offset = 20 * ($page - 1);
         $allList = AppXzConvenient::model()->findAll($criteria);
+        if(empty($allList))
+        {
+            $criteria1 = new CDbCriteria;
+            $criteria1->limit = 20;
+            $criteria1->offset = 20 * ($page - 1);
+            $allList = AppXzConvenient::model()->findAll($criteria1);
+        }
+
         $data = array();
         foreach ($allList as $value) {
             $img = "";
@@ -1833,7 +1857,8 @@ class V1Controller extends Controller
                 "name"=>$value['name'],
                 "img"=>$img,
                 "lng"=>$value['lng'],
-                "lat"=>$value['lat']
+                "lat"=>$value['lat'],
+                "zonecode"=>$value['zone']
             ));
         }
         $this->msgsucc($msg);
@@ -1961,7 +1986,7 @@ class V1Controller extends Controller
             "data"=>$data,
             "sign"=>$sign
         );
-        $url = false?"http://127.0.0.1/xzgz/project/index.php":"http://120.24.234.19/api/xzgz/project/index.php";
+        $url = true?"http://127.0.0.1/xzgz/project/index.php/v1":"http://120.24.234.19/api/xzgz/project/index.php/v1";
 //echo RemoteCurl::getInstance()->post($url,$rtnList);die();
 
         print_r(json_decode(RemoteCurl::getInstance()->post($url,$rtnList)));
